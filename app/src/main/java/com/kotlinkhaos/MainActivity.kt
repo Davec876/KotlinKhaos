@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -12,8 +13,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kotlinkhaos.classes.PracticeQuiz
 import com.kotlinkhaos.classes.User
 import com.kotlinkhaos.databinding.ActivityMainBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             val user = User.getUser()
             if (user == null) {
                 moveToLoginPage()
@@ -60,5 +59,6 @@ class MainActivity : AppCompatActivity() {
     private fun moveToLoginPage() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
+        finish()
     }
 }

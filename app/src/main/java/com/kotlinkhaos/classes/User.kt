@@ -42,6 +42,9 @@ class User private constructor(private val fireBaseUser: FirebaseUser) {
             return User(loadedFirebaseUser)
         }
 
+        fun logout() {
+            FirebaseAuth.getInstance().signOut()
+        }
     }
 
     suspend fun getJwt(): String {
