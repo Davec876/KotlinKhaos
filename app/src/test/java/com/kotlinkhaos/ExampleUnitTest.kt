@@ -1,4 +1,4 @@
-package com.example.kotlinkhaos
+package com.kotlinkhaos
 
 import org.junit.Test
 
