@@ -10,7 +10,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.kotlinkhaos.classes.PracticeQuiz
 import com.kotlinkhaos.classes.User
 import com.kotlinkhaos.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
@@ -48,11 +47,6 @@ class MainActivity : AppCompatActivity() {
                 Log.i("Firebase", "User is not logged in!")
                 return@launch
             }
-            val practiceQuiz = PracticeQuiz.start(user, "random")
-            println(practiceQuiz.getId())
-            println(practiceQuiz.getQuestion())
-//            practiceQuiz.sendAnswer(user, "I hate kotlin")
-//            println(practiceQuiz.getFeedback())
         }
     }
 
