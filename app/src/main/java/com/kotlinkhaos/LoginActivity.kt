@@ -3,14 +3,11 @@ package com.kotlinkhaos
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.kotlinkhaos.classes.User
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.databinding.ActivityLoginBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -24,21 +21,19 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun handleLogin(view: View) {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
-                val emailView = findViewById<EditText>(R.id.inputEmailAddress)
-                val passwordView = findViewById<EditText>(R.id.inputPassword)
-                val email: String = emailView.text.toString().trim()
-                val password: String = passwordView.text.toString().trim()
+                val email: String = binding.inputEmailAddress.text.toString().trim()
+                val password: String = binding.inputPassword.text.toString().trim()
                 val user = User.login(email, password)
                 if (user != null) {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
+                    finish()
                 }
             } catch (err: Exception) {
                 if (err is FirebaseAuthError) {
-                    val errorMessageView = findViewById<TextView>(R.id.errorMessage)
-                    errorMessageView.text = err.message
+                    binding.errorMessage.text = err.message
                     return@launch
                 }
                 throw err;
