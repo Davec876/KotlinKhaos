@@ -104,7 +104,7 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
 data class PracticeQuizStartRes(val problem: String, val practiceQuizId: String)
 
 @Serializable
-data class PracticeQuizGetByIdRes(val message: String?, val score: Int?)
+data class PracticeQuizGetByIdRes(val message: String? = null, val score: Int? = null)
 
 @Serializable
 data class PracticeQuizAnswerReq(val answer: String)
@@ -113,4 +113,4 @@ data class PracticeQuizAnswerReq(val answer: String)
 data class PracticeQuizAnswerRes(val feedback: String)
 
 @Serializable
-data class PracticeQuizContinueRes(val problem: String?, val score: Int?)
+data class PracticeQuizContinueRes(val problem: String? = null, val score: Int? = null)
