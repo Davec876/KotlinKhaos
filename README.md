@@ -1,6 +1,6 @@
 # Mobile Computing 4176
 
-
+![Alt text](https://images.maximoguk.com/KotlinKhaos.svg)
 
 ## Getting started
 
