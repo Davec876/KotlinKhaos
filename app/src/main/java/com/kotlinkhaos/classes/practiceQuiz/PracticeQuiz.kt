@@ -1,5 +1,6 @@
-package com.kotlinkhaos.classes
+package com.kotlinkhaos.classes.practiceQuiz
 
+import com.kotlinkhaos.classes.User
 import com.kotlinkhaos.classes.services.KotlinKhaosPracticeQuizApi
 
 class PracticeQuiz private constructor(

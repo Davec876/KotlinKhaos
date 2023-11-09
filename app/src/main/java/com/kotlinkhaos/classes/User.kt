@@ -1,8 +1,10 @@
 package com.kotlinkhaos.classes
 
+import android.util.Log
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseUser
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import kotlinx.coroutines.tasks.await
@@ -36,10 +38,20 @@ class User private constructor(private val fireBaseUser: FirebaseUser) {
         }
 
         fun getUser(): User? {
-            val mAuth = FirebaseAuth.getInstance()
-            val loadedFirebaseUser = mAuth.currentUser ?: return null
-            loadedFirebaseUser.reload()
-            return User(loadedFirebaseUser)
+            try {
+                val mAuth = FirebaseAuth.getInstance()
+                val loadedFirebaseUser = mAuth.currentUser ?: return null
+                loadedFirebaseUser.reload()
+                return User(loadedFirebaseUser)
+            } catch (err: Exception) {
+                if (err is FirebaseAuthInvalidUserException) {
+                    if (err.message != null) {
+                        Log.i("Firebase", err.message!!)
+                    }
+                    return null
+                }
+                throw err;
+            }
         }
 
         fun logout() {
@@ -48,7 +60,8 @@ class User private constructor(private val fireBaseUser: FirebaseUser) {
     }
 
     suspend fun getJwt(): String {
-        return this.fireBaseUser.getIdToken(true).await().token
+        // Since we're using the firebase sdk, it should manage token refreshes automatically for us
+        return this.fireBaseUser.getIdToken(false).await().token
             ?: throw Exception("Error getting token!")
     }
 }
