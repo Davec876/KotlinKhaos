@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.kotlinkhaos.LoginActivity
 import com.kotlinkhaos.classes.User
-import com.kotlinkhaos.databinding.FragmentHomeBinding
+import com.kotlinkhaos.databinding.FragmentStudentHomeBinding
+import com.kotlinkhaos.ui.auth.AuthActivity
 
-class HomeFragment : Fragment() {
-    private var _binding: FragmentHomeBinding? = null
+class StudentHomeFragment : Fragment() {
+    private var _binding: FragmentStudentHomeBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -23,14 +23,14 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentStudentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         binding.logoutButton.setOnClickListener {
-            handleLogout(it)
+            handleLogout()
         }
 
         val textView: TextView = binding.textHome
-        textView.text = "This is home Fragment"
+        textView.text = "This is student home Fragment"
         return root
     }
 
@@ -39,9 +39,9 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun handleLogout(view: View) {
+    private fun handleLogout() {
         User.logout()
-        val intent = Intent(requireActivity(), LoginActivity::class.java)
+        val intent = Intent(requireActivity(), AuthActivity::class.java)
         startActivity(intent)
         requireActivity().finish()
     }

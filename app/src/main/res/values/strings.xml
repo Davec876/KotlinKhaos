@@ -2,11 +2,13 @@
     <string name="app_name">Kotlin Khaos</string>
     <string name="app_slogan">Learn with us!</string>
     <string name="login_button">Login</string>
-    <string name="go_to_signup">Go to signup!</string>
+    <string name="login_go_to_signup"><u>Go to signup!</u></string>
     <string name="placeholder_email">email</string>
     <string name="placeholder_password">password</string>
     <string name="logout_button">Logout</string>
     <string name="title_home">Home</string>
     <string name="title_practice">Practice</string>
     <string name="title_profile">Profile</string>
+    <string name="title_login">Login</string>
+    <string name="title_register">Register</string>
 </resources>

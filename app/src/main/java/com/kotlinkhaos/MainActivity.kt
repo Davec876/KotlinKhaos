@@ -12,6 +12,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.kotlinkhaos.classes.User
 import com.kotlinkhaos.databinding.ActivityMainBinding
+import com.kotlinkhaos.ui.auth.AuthActivity
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -43,15 +44,15 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val user = User.getUser()
             if (user == null) {
-                moveToLoginPage()
+                moveToAuthActivity()
                 Log.i("Firebase", "User is not logged in!")
                 return@launch
             }
         }
     }
 
-    private fun moveToLoginPage() {
-        val intent = Intent(this, LoginActivity::class.java)
+    private fun moveToAuthActivity() {
+        val intent = Intent(this, AuthActivity::class.java)
         startActivity(intent)
         finish()
     }

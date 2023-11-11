@@ -23,10 +23,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
-            android:exported="true"
-            android:label="Login">
-        </activity>
+            android:name=".ui.auth.AuthActivity"
+            android:exported="true" />
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.kotlinkhaos.ui.student.practice
+package com.kotlinkhaos.ui.student.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.kotlinkhaos.databinding.FragmentPracticeBinding
+import com.kotlinkhaos.databinding.FragmentStudentProfileBinding
 
-class PracticeFragment : Fragment() {
-    private var _binding: FragmentPracticeBinding? = null
+class StudentProfileFragment : Fragment() {
+    private var _binding: FragmentStudentProfileBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -20,11 +20,12 @@ class PracticeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPracticeBinding.inflate(inflater, container, false)
+        _binding = FragmentStudentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textPractice
-        textView.text = "This is practice Fragment"
+        val textView: TextView = binding.textProfile
+        textView.text = "This is student profile Fragment"
+
         return root
     }
 

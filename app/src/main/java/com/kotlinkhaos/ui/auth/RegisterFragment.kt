@@ -1,4 +1,4 @@
-package com.kotlinkhaos.ui.student.profile
+package com.kotlinkhaos.ui.auth
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,10 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.kotlinkhaos.databinding.FragmentProfileBinding
+import com.kotlinkhaos.databinding.FragmentRegisterBinding
 
-class ProfileFragment : Fragment() {
-    private var _binding: FragmentProfileBinding? = null
+class RegisterFragment : Fragment() {
+    private var _binding: FragmentRegisterBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -20,12 +20,11 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textProfile
-        textView.text = "This is profile Fragment"
-
+        val textView: TextView = binding.textRegister
+        textView.text = "This is register Fragment"
         return root
     }
 
