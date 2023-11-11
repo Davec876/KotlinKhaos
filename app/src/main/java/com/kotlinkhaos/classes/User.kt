@@ -5,15 +5,61 @@ import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.getValue
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import kotlinx.coroutines.tasks.await
 
-class User private constructor(private val fireBaseUser: FirebaseUser) {
+enum class UserType {
+    STUDENT,
+    INSTRUCTOR,
+    NONE
+}
+
+// No-argument constructor, initialized empty strings
+private data class UserDetails(
+    val courseId: String = "",
+    val name: String = "",
+    val type: UserType = UserType.NONE
+)
+
+class User private constructor(
+    private val userId: String,
+    private val courseId: String,
+    private val name: String,
+    private val type: UserType
+) {
     companion object {
         private fun validateLoginParameters(email: String, pass: String) {
             if (email.isEmpty() || pass.isEmpty()) {
                 throw FirebaseAuthError("Email and password must not be empty")
+            }
+        }
+
+        private fun validateRegisterParameters(
+            email: String,
+            pass: String,
+            userDetails: UserDetails
+        ) {
+            validateLoginParameters(email, pass)
+            if (userDetails.name.isEmpty()) {
+                throw FirebaseAuthError("Name must not be empty")
+            }
+        }
+
+        private suspend fun fetchUserDetails(userId: String): UserDetails {
+            val databaseReference = FirebaseDatabase.getInstance().getReference("users/$userId")
+            val dataSnapshot = databaseReference.get().await()
+            return dataSnapshot.getValue<UserDetails>()
+                ?: throw Exception("User details not found")
+        }
+
+        private suspend fun createUserDetails(userId: String, userDetails: UserDetails) {
+            try {
+                val databaseReference = FirebaseDatabase.getInstance().getReference("users/$userId")
+                databaseReference.setValue(userDetails).await()
+            } catch (e: Exception) {
+                throw FirebaseAuthError("Failed to create user details: ${e.message}")
             }
         }
 
@@ -22,7 +68,13 @@ class User private constructor(private val fireBaseUser: FirebaseUser) {
                 validateLoginParameters(email, pass)
                 val mAuth = FirebaseAuth.getInstance()
                 val result = mAuth.signInWithEmailAndPassword(email, pass).await() ?: return null
-                return User(result.user!!)
+                val userDetails = fetchUserDetails(result.user!!.uid)
+                return User(
+                    result.user!!.uid,
+                    userDetails.courseId,
+                    userDetails.name,
+                    userDetails.type
+                )
             } catch (err: Exception) {
                 if (err is FirebaseAuthInvalidCredentialsException && err.message != null) {
                     throw FirebaseAuthError(err.message!!)
@@ -37,12 +89,28 @@ class User private constructor(private val fireBaseUser: FirebaseUser) {
             }
         }
 
-        fun getUser(): User? {
+        suspend fun register(email: String, pass: String, name: String, type: UserType): User? {
+            // When a user is first created, they don't have a courseId
+            val userDetails = UserDetails(courseId = "", name, type)
+            validateRegisterParameters(email, pass, userDetails)
+            val mAuth = FirebaseAuth.getInstance()
+            val result = mAuth.createUserWithEmailAndPassword(email, pass).await() ?: return null
+            createUserDetails(result.user!!.uid, userDetails)
+            return User(result.user!!.uid, userDetails.courseId, userDetails.name, userDetails.type)
+        }
+
+        suspend fun getUser(): User? {
             try {
                 val mAuth = FirebaseAuth.getInstance()
                 val loadedFirebaseUser = mAuth.currentUser ?: return null
                 loadedFirebaseUser.reload()
-                return User(loadedFirebaseUser)
+                val userDetails = fetchUserDetails(loadedFirebaseUser.uid)
+                return User(
+                    loadedFirebaseUser.uid,
+                    userDetails.courseId,
+                    userDetails.name,
+                    userDetails.type
+                )
             } catch (err: Exception) {
                 if (err is FirebaseAuthInvalidUserException) {
                     if (err.message != null) {
@@ -59,9 +127,27 @@ class User private constructor(private val fireBaseUser: FirebaseUser) {
         }
     }
 
+    fun getUserId(): String {
+        return this.userId
+    }
+
+    fun getCourseId(): String {
+        return this.courseId;
+    }
+
+    fun getName(): String {
+        return this.name
+    }
+
+    fun getType(): UserType {
+        return this.type
+    }
+
     suspend fun getJwt(): String {
         // Since we're using the firebase sdk, it should manage token refreshes automatically for us
-        return this.fireBaseUser.getIdToken(false).await().token
+        val mAuth = FirebaseAuth.getInstance()
+        val loadedFirebaseUser = mAuth.currentUser ?: throw FirebaseAuthError("Error getting user!")
+        return loadedFirebaseUser.getIdToken(false).await().token
             ?: throw Exception("Error getting token!")
     }
 }
