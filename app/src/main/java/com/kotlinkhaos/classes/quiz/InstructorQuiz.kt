@@ -1,23 +1,37 @@
 package com.kotlinkhaos.classes.quiz
 
 import com.kotlinkhaos.classes.User
+import com.kotlinkhaos.classes.errors.QuizCreationError
 import com.kotlinkhaos.classes.services.KotlinKhaosQuizInstructorApi
 import com.kotlinkhaos.classes.services.QuizCreateReq
 
 class InstructorQuiz private constructor(
     private val id: String,
     private var name: String,
+    private val questionLimit: Int,
     private val questions: MutableList<String>
 ) {
     companion object {
+        private fun validateQuizCreateOptions(quizCreateOptions: QuizCreateReq.Options) {
+            if (quizCreateOptions.name.isEmpty() || quizCreateOptions.prompt.isEmpty()) {
+                throw QuizCreationError("Name and prompt must not be empty")
+            }
+        }
+
         suspend fun createQuiz(
-            quizStartOptions: QuizCreateReq.Options
+            quizCreateOptions: QuizCreateReq.Options
         ): InstructorQuiz {
+            validateQuizCreateOptions(quizCreateOptions)
             val token = User.getJwt()
             val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
-            val res = kotlinKhaosApi.createQuiz(quizStartOptions)
+            val res = kotlinKhaosApi.createQuiz(quizCreateOptions)
             val questions = mutableListOf(res.firstQuestion)
-            return InstructorQuiz(res.quizId, quizStartOptions.name, questions)
+            return InstructorQuiz(
+                res.quizId,
+                quizCreateOptions.name,
+                quizCreateOptions.questionLimit,
+                questions
+            )
         }
     }
 
@@ -27,6 +41,10 @@ class InstructorQuiz private constructor(
 
     fun getName(): String {
         return this.name;
+    }
+
+    fun getQuestionLimit(): Int {
+        return this.questionLimit;
     }
 
     fun getQuestions(): List<String> {

@@ -3,6 +3,7 @@ package com.kotlinkhaos
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -43,6 +44,13 @@ class MainActivity : AppCompatActivity() {
                 val navController = findNavController(R.id.nav_host_fragment_activity_main)
                 navController.graph =
                     navController.navInflater.inflate(R.navigation.instructor_main_navigation)
+                navController.addOnDestinationChangedListener { _, destination, _ ->
+                    when (destination.id) {
+                        R.id.navigation_instructor_home -> navView.visibility = View.VISIBLE
+                        R.id.navigation_instructor_course -> navView.visibility = View.VISIBLE
+                        else -> navView.visibility = View.GONE
+                    }
+                }
                 val appBarConfiguration = AppBarConfiguration(
                     setOf(
                         R.id.navigation_instructor_home, R.id.navigation_instructor_course
@@ -55,6 +63,14 @@ class MainActivity : AppCompatActivity() {
 
             setContentView(binding.root)
             val navController = findNavController(R.id.nav_host_fragment_activity_main)
+            navController.addOnDestinationChangedListener { _, destination, _ ->
+                when (destination.id) {
+                    R.id.navigation_student_home -> navView.visibility = View.VISIBLE
+                    R.id.navigation_student_practice -> navView.visibility = View.VISIBLE
+                    R.id.navigation_student_profile -> navView.visibility = View.VISIBLE
+                    else -> navView.visibility = View.GONE
+                }
+            }
             // Passing each menu ID as a set of Ids because each
             // menu should be considered as top level destinations.
             val appBarConfiguration = AppBarConfiguration(
@@ -73,5 +89,10 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, AuthActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

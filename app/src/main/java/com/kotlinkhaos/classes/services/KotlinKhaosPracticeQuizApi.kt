@@ -1,6 +1,8 @@
 package com.kotlinkhaos.classes.services;
 
 import android.util.Log
+import com.kotlinkhaos.classes.errors.KotlinKhaosApiError
+import com.kotlinkhaos.classes.errors.PracticeQuizApiError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -11,8 +13,10 @@ import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -29,11 +33,11 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
 
     suspend fun startPracticeQuiz(prompt: String): PracticeQuizStartRes {
         try {
-            val parsedRes: PracticeQuizStartRes = client.post("$apiHost/practice-quizs") {
+            val res = client.post("$apiHost/practice-quizs") {
                 parameter("prompt", prompt)
                 addRequiredApiHeaders()
-            }.body()
-            return parsedRes
+            }
+            return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in startPracticeQuiz", err)
             throw err
@@ -46,10 +50,10 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
         practiceQuizId: String
     ): PracticeQuizGetByIdRes {
         try {
-            val parsedRes: PracticeQuizGetByIdRes =
+            val res =
                 client.get("$apiHost/practice-quizs/$practiceQuizId") {
-                }.body()
-            return parsedRes
+                }
+            return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in getPractice", err)
             throw err
@@ -63,12 +67,12 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
         answer: String
     ): PracticeQuizAnswerRes {
         try {
-            val parsedRes: PracticeQuizAnswerRes =
+            val res =
                 client.post("$apiHost/practice-quizs/$practiceQuizId") {
                     setBody(PracticeQuizAnswerReq(answer))
                     addRequiredApiHeaders()
-                }.body()
-            return parsedRes
+                }
+            return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in sendPracticeQuizAnswer", err)
             throw err
@@ -81,11 +85,11 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
         practiceQuizId: String
     ): PracticeQuizContinueRes {
         try {
-            val parsedRes: PracticeQuizContinueRes =
+            val res =
                 client.post("$apiHost/practice-quizs/$practiceQuizId/continue") {
                     addRequiredApiHeaders()
-                }.body()
-            return parsedRes
+                }
+            return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in continuePracticeQuiz", err)
             throw err
@@ -97,6 +101,14 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
     private fun HttpRequestBuilder.addRequiredApiHeaders() {
         header(HttpHeaders.Authorization, "Bearer $token")
         header(HttpHeaders.ContentType, ContentType.Application.Json)
+    }
+
+    private suspend inline fun <reified T> parseResponseFromApi(res: HttpResponse): T {
+        if (res.status.isSuccess()) {
+            return res.body()
+        }
+        val apiError: KotlinKhaosApiError = res.body()
+        throw PracticeQuizApiError(apiError.status, apiError.error)
     }
 }
 

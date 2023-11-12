@@ -1,6 +1,8 @@
 package com.kotlinkhaos.classes.services;
 
 import android.util.Log
+import com.kotlinkhaos.classes.errors.KotlinKhaosApiError
+import com.kotlinkhaos.classes.errors.QuizApiError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -10,8 +12,10 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -26,13 +30,13 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
-    suspend fun createQuiz(quizStartOptions: QuizCreateReq.Options): QuizCreateRes {
+    suspend fun createQuiz(quizCreateOptions: QuizCreateReq.Options): QuizCreateRes {
         try {
-            val parsedRes: QuizCreateRes = client.post("$apiHost/instructor/quizs") {
-                setBody(QuizCreateReq(quizStartOptions))
+            val res = client.post("$apiHost/instructor/quizs") {
+                setBody(QuizCreateReq(quizCreateOptions))
                 addRequiredApiHeaders()
-            }.body()
-            return parsedRes
+            }
+            return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in startQuiz", err)
             throw err
@@ -43,11 +47,11 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
 
     suspend fun nextQuestion(quizId: String): QuizNextQuestionRes {
         try {
-            val parsedRes: QuizNextQuestionRes =
+            val res =
                 client.post("$apiHost/instructor/quizs/$quizId/next-question") {
                     addRequiredApiHeaders()
-                }.body()
-            return parsedRes
+                }
+            return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in nextQuestion", err)
             throw err
@@ -58,12 +62,12 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
 
     suspend fun editQuestions(quizId: String, questions: List<String>): QuizEditQuestionRes {
         try {
-            val parsedRes: QuizEditQuestionRes =
+            val res =
                 client.put("$apiHost/instructor/quizs/$quizId/edit") {
                     setBody(QuizEditQuestionReq(questions))
                     addRequiredApiHeaders()
-                }.body()
-            return parsedRes
+                }
+            return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in editQuestions", err)
             throw err
@@ -74,10 +78,10 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
 
     suspend fun startQuiz(quizId: String): QuizStartRes {
         try {
-            val parsedRes: QuizStartRes = client.post("$apiHost/instructor/quizs/$quizId/start") {
+            val res = client.post("$apiHost/instructor/quizs/$quizId/start") {
                 addRequiredApiHeaders()
-            }.body()
-            return parsedRes
+            }
+            return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in startQuiz", err)
             throw err
@@ -88,10 +92,10 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
 
     suspend fun finishQuiz(quizId: String): QuizFinishRes {
         try {
-            val parsedRes: QuizFinishRes = client.post("$apiHost/instructor/quizs/$quizId/finish") {
+            val res = client.post("$apiHost/instructor/quizs/$quizId/finish") {
                 addRequiredApiHeaders()
-            }.body()
-            return parsedRes
+            }
+            return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in finishQuiz", err)
             throw err
@@ -103,6 +107,14 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
     private fun HttpRequestBuilder.addRequiredApiHeaders() {
         header(HttpHeaders.Authorization, "Bearer $token")
         header(HttpHeaders.ContentType, ContentType.Application.Json)
+    }
+
+    private suspend inline fun <reified T> parseResponseFromApi(res: HttpResponse): T {
+        if (res.status.isSuccess()) {
+            return res.body()
+        }
+        val apiError: KotlinKhaosApiError = res.body()
+        throw QuizApiError(apiError.status, apiError.error)
     }
 }
 

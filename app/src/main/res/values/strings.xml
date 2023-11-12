@@ -13,4 +13,16 @@
     <string name="title_login">Login</string>
     <string name="title_register">Register</string>
     <string name="fab_add_a_quiz">Add a quiz</string>
+    <string name="title_create_quiz">Create Quiz</string>
+    <string name="generate_quiz_button">Generate Quiz!</string>
+    <string name="create_a_quiz">Create a quiz!</string>
+    <string name="placeholder_quiz_name">Quiz Name</string>
+    <string name="placeholder_quiz_prompt">Quiz Prompt</string>
+    <string name="create_quiz_question_limit">Question Limit</string>
+    <string name="quiz_card_question_number">Question %1$s</string>
+    <string name="quiz_card_placeholder_question_number">Question 1</string>
+    <string name="quiz_card_placeholder_question">1. Placeholder question</string>
+    <string name="start_quiz_button">Start Quiz</string>
+    <string name="next_question_button">Next Question</string>
+    <string name="quiz_creation_action_bar_title">Quiz - %1$s</string>
 </resources>

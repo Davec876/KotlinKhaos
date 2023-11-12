@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.kotlinkhaos.classes.User
 import com.kotlinkhaos.databinding.FragmentInstructorHomeBinding
 import com.kotlinkhaos.ui.auth.AuthActivity
@@ -50,6 +51,7 @@ class InstructorHomeFragment : Fragment() {
     }
 
     private fun handleAddQuiz() {
-        println("TODO: Add a quiz!")
+        val action = InstructorHomeFragmentDirections.startNavigationCreateQuiz()
+        findNavController().navigate(action)
     }
 }
