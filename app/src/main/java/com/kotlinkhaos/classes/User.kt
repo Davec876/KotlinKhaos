@@ -122,6 +122,15 @@ class User private constructor(
             }
         }
 
+        suspend fun getJwt(): String {
+            // Since we're using the firebase sdk, it should manage token refreshes automatically for us
+            val mAuth = FirebaseAuth.getInstance()
+            val loadedFirebaseUser =
+                mAuth.currentUser ?: throw FirebaseAuthError("User is not logged in!")
+            return loadedFirebaseUser.getIdToken(false).await().token
+                ?: throw Exception("Error getting token!")
+        }
+
         fun logout() {
             FirebaseAuth.getInstance().signOut()
         }
@@ -141,13 +150,5 @@ class User private constructor(
 
     fun getType(): UserType {
         return this.type
-    }
-
-    suspend fun getJwt(): String {
-        // Since we're using the firebase sdk, it should manage token refreshes automatically for us
-        val mAuth = FirebaseAuth.getInstance()
-        val loadedFirebaseUser = mAuth.currentUser ?: throw FirebaseAuthError("Error getting user!")
-        return loadedFirebaseUser.getIdToken(false).await().token
-            ?: throw Exception("Error getting token!")
     }
 }

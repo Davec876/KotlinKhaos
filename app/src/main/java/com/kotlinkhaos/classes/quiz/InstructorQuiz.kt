@@ -11,10 +11,9 @@ class InstructorQuiz private constructor(
 ) {
     companion object {
         suspend fun createQuiz(
-            user: User,
             quizStartOptions: QuizCreateReq.Options
         ): InstructorQuiz {
-            val token = user.getJwt()
+            val token = User.getJwt()
             val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
             val res = kotlinKhaosApi.createQuiz(quizStartOptions)
             val questions = mutableListOf(res.firstQuestion)
@@ -38,27 +37,27 @@ class InstructorQuiz private constructor(
         this.questions.add(question)
     }
 
-    suspend fun nextQuestion(user: User) {
-        val token = user.getJwt()
+    suspend fun nextQuestion() {
+        val token = User.getJwt()
         val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
         val res = kotlinKhaosApi.nextQuestion(this.getQuizId())
         appendQuestion(res.question)
     }
 
-    suspend fun editQuestions(user: User, questions: List<String>) {
-        val token = user.getJwt()
+    suspend fun editQuestions(questions: List<String>) {
+        val token = User.getJwt()
         val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
         kotlinKhaosApi.editQuestions(this.getQuizId(), questions)
     }
 
-    suspend fun start(user: User) {
-        val token = user.getJwt()
+    suspend fun start() {
+        val token = User.getJwt()
         val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
         kotlinKhaosApi.startQuiz(this.getQuizId())
     }
 
-    suspend fun finish(user: User) {
-        val token = user.getJwt()
+    suspend fun finish() {
+        val token = User.getJwt()
         val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
         kotlinKhaosApi.finishQuiz(this.getQuizId())
     }

@@ -11,8 +11,8 @@ class PracticeQuiz private constructor(
     private var finalScore: Int,
 ) {
     companion object {
-        suspend fun start(user: User, prompt: String): PracticeQuiz {
-            val token = user.getJwt()
+        suspend fun start(prompt: String): PracticeQuiz {
+            val token = User.getJwt()
             val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
             val res = kotlinKhaosApi.startPracticeQuiz(prompt)
             return PracticeQuiz(res.practiceQuizId, res.problem, "", 1, 0)
@@ -51,15 +51,15 @@ class PracticeQuiz private constructor(
         this.feedback = feedback
     }
 
-    suspend fun sendAnswer(user: User, answer: String) {
-        val token = user.getJwt()
+    suspend fun sendAnswer(answer: String) {
+        val token = User.getJwt()
         val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
         val res = kotlinKhaosApi.sendPracticeQuizAnswer(this.getId(), answer)
         setFeedback(res.feedback)
     }
 
-    suspend fun continuePracticeQuiz(user: User): Boolean {
-        val token = user.getJwt()
+    suspend fun continuePracticeQuiz(): Boolean {
+        val token = User.getJwt()
         val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
         val res = kotlinKhaosApi.continuePracticeQuiz(this.getId())
         if (res.problem != null) {

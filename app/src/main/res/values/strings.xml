@@ -9,6 +9,8 @@
     <string name="title_home">Home</string>
     <string name="title_practice">Practice</string>
     <string name="title_profile">Profile</string>
+    <string name="title_course">Course</string>
     <string name="title_login">Login</string>
     <string name="title_register">Register</string>
+    <string name="fab_add_a_quiz">Add a quiz</string>
 </resources>

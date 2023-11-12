@@ -2,23 +2,23 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_navigation"
-    app:startDestination="@+id/navigation_home">
+    android:id="@+id/student_main_navigation"
+    app:startDestination="@+id/navigation_student_home">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_student_home"
         android:name="com.kotlinkhaos.ui.student.home.StudentHomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_student_home" />
 
     <fragment
-        android:id="@+id/navigation_practice"
+        android:id="@+id/navigation_student_practice"
         android:name="com.kotlinkhaos.ui.student.practice.StudentPracticeFragment"
         android:label="@string/title_practice"
         tools:layout="@layout/fragment_student_practice" />
 
     <fragment
-        android:id="@+id/navigation_profile"
+        android:id="@+id/navigation_student_profile"
         android:name="com.kotlinkhaos.ui.student.profile.StudentProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_student_profile" />
