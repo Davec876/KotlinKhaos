@@ -19,6 +19,7 @@ import com.kotlinkhaos.databinding.FragmentInstructorStartQuizPreviewBinding
 class InstructorStartQuizPreviewFragment : Fragment() {
     private var _binding: FragmentInstructorStartQuizPreviewBinding? = null
     private val quizCreationViewModel: QuizCreationViewModel by activityViewModels()
+    private lateinit var quizQuestionsListAdapter: QuizQuestionsListAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -34,10 +35,13 @@ class InstructorStartQuizPreviewFragment : Fragment() {
         val root: View = binding.root
 
         quizCreationViewModel.clearErrors()
+        quizQuestionsListAdapter = QuizQuestionsListAdapter(emptyList<String>().toMutableList())
+        binding.quizQuestionsList.layoutManager = LinearLayoutManager(requireContext())
+        binding.quizQuestionsList.adapter = quizQuestionsListAdapter
+
         quizCreationViewModel.quizQuestions.observe(viewLifecycleOwner) { quizQuestions ->
             val quiz = quizCreationViewModel.practiceQuiz.value
             if (quiz !== null && quizQuestions.isNotEmpty()) {
-                println(quiz.getQuizId())
                 setLoadingState(false)
                 if (quizQuestions.size != quiz.getQuestionLimit()) {
                     binding.startQuizButton.text = getString(R.string.next_question_button)
@@ -50,15 +54,12 @@ class InstructorStartQuizPreviewFragment : Fragment() {
                         handleStartQuiz()
                     }
                 }
-
-                val continentListAdapter = QuizQuestionsListAdapter(quizQuestions)
+                quizQuestionsListAdapter.appendToDataSet(quizQuestions.last())
                 binding.quizQuestionsList.addItemDecoration(
                     SpaceItemDecorationBottom(
                         16
                     )
                 )
-                binding.quizQuestionsList.layoutManager = LinearLayoutManager(requireContext())
-                binding.quizQuestionsList.adapter = continentListAdapter
             }
         }
 
@@ -106,7 +107,8 @@ class InstructorStartQuizPreviewFragment : Fragment() {
 
     private fun handleStartQuiz() {
         setLoadingState(true)
-        quizCreationViewModel.startQuiz()
+        val currentQuestions = quizQuestionsListAdapter.getDataSet()
+        quizCreationViewModel.startQuiz(currentQuestions)
     }
 
     private fun setLoadingState(loading: Boolean) {

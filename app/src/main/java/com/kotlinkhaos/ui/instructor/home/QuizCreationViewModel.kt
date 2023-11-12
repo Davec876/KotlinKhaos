@@ -13,7 +13,8 @@ class QuizCreationViewModel : ViewModel() {
     private var _quizError = MutableLiveData<Exception?>()
     val quizError: LiveData<Exception?> = _quizError
 
-    private var _quizQuestions = MutableLiveData<List<String>>(emptyList())
+    private var _quizQuestions =
+        MutableLiveData<List<String>>(emptyList())
     val quizQuestions: LiveData<List<String>> = _quizQuestions
 
     private var _quizStarted = MutableLiveData(false)
@@ -45,12 +46,17 @@ class QuizCreationViewModel : ViewModel() {
         }
     }
 
-    fun startQuiz() {
+    fun startQuiz(currentDataSetQuestions: List<String>) {
         viewModelScope.launch {
             try {
                 val quiz = _practiceQuiz.value
-                quiz?.start()
-                _quizStarted.value = true
+                if (quiz != null) {
+                    if (currentDataSetQuestions != quiz.getQuestions()) {
+                        quiz.editQuestions(currentDataSetQuestions)
+                    }
+                    quiz.start()
+                    _quizStarted.value = true
+                }
             } catch (e: Exception) {
                 _quizError.value = e
             }

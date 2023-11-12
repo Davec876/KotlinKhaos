@@ -9,7 +9,7 @@ class InstructorQuiz private constructor(
     private val id: String,
     private var name: String,
     private val questionLimit: Int,
-    private val questions: MutableList<String>
+    private var questions: MutableList<String>
 ) {
     companion object {
         private fun validateQuizCreateOptions(quizCreateOptions: QuizCreateReq.Options) {
@@ -47,6 +47,10 @@ class InstructorQuiz private constructor(
         return this.questionLimit;
     }
 
+    private fun setQuestions(questions: List<String>) {
+        this.questions = questions.toMutableList()
+    }
+
     fun getQuestions(): List<String> {
         return this.questions;
     }
@@ -66,6 +70,7 @@ class InstructorQuiz private constructor(
         val token = User.getJwt()
         val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
         kotlinKhaosApi.editQuestions(this.getQuizId(), questions)
+        setQuestions(questions)
     }
 
     suspend fun start() {
