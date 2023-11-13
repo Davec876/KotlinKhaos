@@ -46,8 +46,8 @@ class LoginFragment : Fragment() {
     private fun handleLogin() {
         lifecycleScope.launch {
             try {
-                val email: String = binding.inputEmailAddress.text.toString().trim()
-                val password: String = binding.inputPassword.text.toString().trim()
+                val email = binding.inputEmailAddress.text.toString().trim()
+                val password = binding.inputPassword.text.toString().trim()
                 val user = User.login(email, password)
                 if (user != null) {
                     val intent = Intent(requireActivity(), MainActivity::class.java)
