@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/navigation_instructor_create_quiz"
-        android:name="com.kotlinkhaos.ui.instructor.home.InstructorCreateQuizFragment"
+        android:name="com.kotlinkhaos.ui.instructor.home.quizCreation.InstructorCreateQuizFragment"
         android:label="@string/title_create_quiz"
         tools:layout="@layout/fragment_instructor_create_quiz">
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/navigation_instructor_start_quiz_preview"
-        android:name="com.kotlinkhaos.ui.instructor.home.InstructorStartQuizPreviewFragment"
+        android:name="com.kotlinkhaos.ui.instructor.home.quizCreation.InstructorStartQuizPreviewFragment"
         android:label="@string/title_create_quiz"
         tools:layout="@layout/fragment_instructor_start_quiz_preview">
         <action

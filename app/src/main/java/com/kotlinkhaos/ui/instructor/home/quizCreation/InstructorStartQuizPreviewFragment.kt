@@ -1,6 +1,5 @@
-package com.kotlinkhaos.ui.instructor.home
+package com.kotlinkhaos.ui.instructor.home.quizCreation
 
-import QuizCreationViewModel
 import SpaceItemDecorationBottom
 import android.os.Bundle
 import android.view.LayoutInflater

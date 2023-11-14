@@ -3,11 +3,13 @@ package com.kotlinkhaos.classes.services;
 import android.util.Log
 import com.kotlinkhaos.classes.errors.KotlinKhaosApiError
 import com.kotlinkhaos.classes.errors.QuizApiError
+import com.kotlinkhaos.classes.errors.QuizNetworkError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
@@ -17,8 +19,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.nio.channels.UnresolvedAddressException
 
 class KotlinKhaosQuizInstructorApi(private val token: String) {
     private val apiHost = "https://kotlin-khaos-api.maximoguk.com"
@@ -39,6 +43,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in startQuiz", err)
+            if (err is UnresolvedAddressException) {
+                throw QuizNetworkError()
+            }
             throw err
         } finally {
             client.close()
@@ -54,6 +61,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in nextQuestion", err)
+            if (err is UnresolvedAddressException) {
+                throw QuizNetworkError()
+            }
             throw err
         } finally {
             client.close()
@@ -70,6 +80,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in editQuestions", err)
+            if (err is UnresolvedAddressException) {
+                throw QuizNetworkError()
+            }
             throw err
         } finally {
             client.close()
@@ -84,6 +97,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in startQuiz", err)
+            if (err is UnresolvedAddressException) {
+                throw QuizNetworkError()
+            }
             throw err
         } finally {
             client.close()
@@ -98,6 +114,26 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in finishQuiz", err)
+            if (err is UnresolvedAddressException) {
+                throw QuizNetworkError()
+            }
+            throw err
+        } finally {
+            client.close()
+        }
+    }
+
+    suspend fun getQuizsForCourse(): QuizsForCourseRes {
+        try {
+            val res = client.get("$apiHost/instructor/course/quizs") {
+                addRequiredApiHeaders()
+            }
+            return parseResponseFromApi(res)
+        } catch (err: Exception) {
+            Log.e("KotlinKhaosApi", "Error in getQuizsForACourse", err)
+            if (err is UnresolvedAddressException) {
+                throw QuizNetworkError()
+            }
             throw err
         } finally {
             client.close()
@@ -147,3 +183,33 @@ data class QuizStartRes(val success: Boolean)
 
 @Serializable
 data class QuizFinishRes(val success: Boolean)
+
+@Serializable
+data class QuizsForCourseRes(
+    val quizs: List<QuizDetailsRes>
+) {
+    @Serializable
+    data class QuizDetailsRes(
+        val id: String,
+        val name: String,
+        val started: Boolean,
+        val finished: Boolean,
+        val questions: List<Question>,
+        val startedAttemptsUserIds: List<String>,
+        val finishedUserAttempts: Map<String, UserAttempt>
+    ) {
+        @Serializable
+        data class Question(
+            val content: String,
+            val role: String
+        )
+
+        @Serializable
+        data class UserAttempt(
+            val attemptId: String,
+            val studentId: String,
+            val score: Int,
+            val submittedOn: Instant
+        )
+    }
+}

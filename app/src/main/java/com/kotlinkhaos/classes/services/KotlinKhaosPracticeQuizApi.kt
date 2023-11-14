@@ -3,6 +3,7 @@ package com.kotlinkhaos.classes.services;
 import android.util.Log
 import com.kotlinkhaos.classes.errors.KotlinKhaosApiError
 import com.kotlinkhaos.classes.errors.PracticeQuizApiError
+import com.kotlinkhaos.classes.errors.PracticeQuizNetworkError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -20,6 +21,7 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import java.nio.channels.UnresolvedAddressException
 
 class KotlinKhaosPracticeQuizApi(private val token: String) {
     private val apiHost = "https://kotlin-khaos-api.maximoguk.com"
@@ -40,6 +42,9 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in startPracticeQuiz", err)
+            if (err is UnresolvedAddressException) {
+                throw PracticeQuizNetworkError()
+            }
             throw err
         } finally {
             client.close()
@@ -56,6 +61,9 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in getPractice", err)
+            if (err is UnresolvedAddressException) {
+                throw PracticeQuizNetworkError()
+            }
             throw err
         } finally {
             client.close()
@@ -75,6 +83,9 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in sendPracticeQuizAnswer", err)
+            if (err is UnresolvedAddressException) {
+                throw PracticeQuizNetworkError()
+            }
             throw err
         } finally {
             client.close()
@@ -92,6 +103,9 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in continuePracticeQuiz", err)
+            if (err is UnresolvedAddressException) {
+                throw PracticeQuizNetworkError()
+            }
             throw err
         } finally {
             client.close()

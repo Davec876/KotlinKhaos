@@ -1,19 +1,23 @@
 package com.kotlinkhaos.ui.instructor.home
 
-import android.content.Intent
+import SpaceItemDecorationHeight
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.kotlinkhaos.classes.User
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kotlinkhaos.classes.errors.FirebaseAuthError
+import com.kotlinkhaos.classes.errors.QuizError
+import com.kotlinkhaos.classes.quiz.InstructorQuiz
 import com.kotlinkhaos.databinding.FragmentInstructorHomeBinding
-import com.kotlinkhaos.ui.auth.AuthActivity
+import kotlinx.coroutines.launch
 
 class InstructorHomeFragment : Fragment() {
     private var _binding: FragmentInstructorHomeBinding? = null
+    private lateinit var quizsForCourseListAdapter: QuizsForCourseListAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -26,15 +30,22 @@ class InstructorHomeFragment : Fragment() {
     ): View {
         _binding = FragmentInstructorHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        binding.logoutButton.setOnClickListener {
-            handleLogout()
-        }
         binding.addQuizFAB.setOnClickListener {
             handleAddQuiz()
         }
+        binding.refreshQuizForCourseList.setOnRefreshListener {
+            loadQuizListForCourse()
+        }
+        quizsForCourseListAdapter = QuizsForCourseListAdapter(emptyList())
+        binding.quizsForCourseList.adapter = quizsForCourseListAdapter
+        binding.quizsForCourseList.layoutManager = LinearLayoutManager(requireContext())
+        binding.quizsForCourseList.addItemDecoration(
+            SpaceItemDecorationHeight(
+                4
+            )
+        )
 
-        val textView: TextView = binding.textHome
-        textView.text = "This is instructor home Fragment"
+        loadQuizListForCourse()
         return root
     }
 
@@ -43,11 +54,29 @@ class InstructorHomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun handleLogout() {
-        User.logout()
-        val intent = Intent(requireActivity(), AuthActivity::class.java)
-        startActivity(intent)
-        requireActivity().finish()
+    private fun loadQuizListForCourse() {
+        setLoadingState(true)
+        lifecycleScope.launch {
+            try {
+                val quizs = InstructorQuiz.getQuizsForCourse()
+                quizsForCourseListAdapter.updateData(quizs)
+                binding.quizsForCourseList.setHasFixedSize(true) // fixed list performance optimization
+            } catch (err: Exception) {
+                if (err is FirebaseAuthError || err is QuizError) {
+                    binding.errorMessage.text = err.message
+                    return@launch
+                }
+                throw err
+            } finally {
+                setLoadingState(false)
+            }
+        }
+    }
+
+    private fun setLoadingState(loading: Boolean) {
+        binding.refreshQuizForCourseList.post {
+            binding.refreshQuizForCourseList.isRefreshing = loading
+        }
     }
 
     private fun handleAddQuiz() {

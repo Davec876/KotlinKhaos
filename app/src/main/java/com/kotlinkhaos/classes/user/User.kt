@@ -1,4 +1,4 @@
-package com.kotlinkhaos.classes
+package com.kotlinkhaos.classes.user
 
 import android.util.Log
 import com.google.firebase.FirebaseException

@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.kotlinkhaos.MainActivity
-import com.kotlinkhaos.classes.User
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
+import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.databinding.FragmentLoginBinding
 import kotlinx.coroutines.launch
 

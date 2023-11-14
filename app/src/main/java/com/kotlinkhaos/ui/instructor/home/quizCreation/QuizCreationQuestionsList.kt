@@ -1,4 +1,4 @@
-package com.kotlinkhaos.ui.instructor.home
+package com.kotlinkhaos.ui.instructor.home.quizCreation
 
 import android.text.Editable
 import android.text.TextWatcher
@@ -45,7 +45,7 @@ class QuizQuestionsListAdapter(
         val question = dataSet[position]
         viewHolder.quizQuestionNumber.text =
             viewHolder.quizQuestionNumber.context.getString(
-                R.string.quiz_card_question_number,
+                R.string.quiz_question_card_question_number,
                 (position + 1).toString()
             )
         viewHolder.quizQuestion.text = question

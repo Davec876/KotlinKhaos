@@ -1,9 +1,12 @@
 package com.kotlinkhaos.classes.quiz
 
-import com.kotlinkhaos.classes.User
+import com.google.firebase.FirebaseNetworkException
 import com.kotlinkhaos.classes.errors.QuizCreationError
+import com.kotlinkhaos.classes.errors.QuizNetworkError
 import com.kotlinkhaos.classes.services.KotlinKhaosQuizInstructorApi
 import com.kotlinkhaos.classes.services.QuizCreateReq
+import com.kotlinkhaos.classes.services.QuizsForCourseRes
+import com.kotlinkhaos.classes.user.User
 
 class InstructorQuiz private constructor(
     private val id: String,
@@ -21,17 +24,36 @@ class InstructorQuiz private constructor(
         suspend fun createQuiz(
             quizCreateOptions: QuizCreateReq.Options
         ): InstructorQuiz {
-            validateQuizCreateOptions(quizCreateOptions)
-            val token = User.getJwt()
-            val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
-            val res = kotlinKhaosApi.createQuiz(quizCreateOptions)
-            val questions = mutableListOf(res.firstQuestion)
-            return InstructorQuiz(
-                res.quizId,
-                quizCreateOptions.name,
-                quizCreateOptions.questionLimit,
-                questions
-            )
+            try {
+                validateQuizCreateOptions(quizCreateOptions)
+                val token = User.getJwt()
+                val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
+                val res = kotlinKhaosApi.createQuiz(quizCreateOptions)
+                val questions = mutableListOf(res.firstQuestion)
+                return InstructorQuiz(
+                    res.quizId,
+                    quizCreateOptions.name,
+                    quizCreateOptions.questionLimit,
+                    questions
+                )
+            } catch (err: Exception) {
+                if (err is FirebaseNetworkException) {
+                    throw QuizNetworkError()
+                }
+                throw err
+            }
+        }
+
+        suspend fun getQuizsForCourse(): List<QuizsForCourseRes.QuizDetailsRes> {
+            try {
+                val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(User.getJwt())
+                return kotlinKhaosApi.getQuizsForCourse().quizs
+            } catch (err: Exception) {
+                if (err is FirebaseNetworkException) {
+                    throw QuizNetworkError()
+                }
+                throw err
+            }
         }
     }
 
@@ -60,28 +82,56 @@ class InstructorQuiz private constructor(
     }
 
     suspend fun nextQuestion() {
-        val token = User.getJwt()
-        val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
-        val res = kotlinKhaosApi.nextQuestion(this.getQuizId())
-        appendQuestion(res.question)
+        try {
+            val token = User.getJwt()
+            val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
+            val res = kotlinKhaosApi.nextQuestion(this.getQuizId())
+            appendQuestion(res.question)
+        } catch (err: Exception) {
+            if (err is FirebaseNetworkException) {
+                throw QuizNetworkError()
+            }
+            throw err
+        }
     }
 
     suspend fun editQuestions(questions: List<String>) {
-        val token = User.getJwt()
-        val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
-        kotlinKhaosApi.editQuestions(this.getQuizId(), questions)
-        setQuestions(questions)
+        try {
+            val token = User.getJwt()
+            val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
+            kotlinKhaosApi.editQuestions(this.getQuizId(), questions)
+            setQuestions(questions)
+        } catch (err: Exception) {
+            if (err is FirebaseNetworkException) {
+                throw QuizNetworkError()
+            }
+            throw err
+        }
     }
 
     suspend fun start() {
-        val token = User.getJwt()
-        val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
-        kotlinKhaosApi.startQuiz(this.getQuizId())
+        try {
+            val token = User.getJwt()
+            val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
+            kotlinKhaosApi.startQuiz(this.getQuizId())
+        } catch (err: Exception) {
+            if (err is FirebaseNetworkException) {
+                throw QuizNetworkError()
+            }
+            throw err
+        }
     }
 
     suspend fun finish() {
-        val token = User.getJwt()
-        val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
-        kotlinKhaosApi.finishQuiz(this.getQuizId())
+        try {
+            val token = User.getJwt()
+            val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
+            kotlinKhaosApi.finishQuiz(this.getQuizId())
+        } catch (err: Exception) {
+            if (err is FirebaseNetworkException) {
+                throw QuizNetworkError()
+            }
+            throw err
+        }
     }
 }

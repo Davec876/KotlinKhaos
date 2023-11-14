@@ -19,10 +19,13 @@
     <string name="placeholder_quiz_name">Quiz Name</string>
     <string name="placeholder_quiz_prompt">Quiz Prompt</string>
     <string name="create_quiz_question_limit">Question Limit</string>
-    <string name="quiz_card_question_number">Question %1$s</string>
-    <string name="quiz_card_placeholder_question_number">Question 1</string>
-    <string name="quiz_card_placeholder_question">1. Placeholder question</string>
+    <string name="quiz_question_card_question_number">Question %1$s</string>
+    <string name="quiz_question_card_placeholder_question_number">Question 1</string>
+    <string name="quiz_question_card_placeholder_question">1. Placeholder question</string>
     <string name="start_quiz_button">Start Quiz</string>
     <string name="next_question_button">Next Question</string>
     <string name="quiz_creation_action_bar_title">Quiz - %1$s</string>
+    <string name="quiz_course_card_placeholder_quiz_name">Placeholder quiz name</string>
+    <string name="quiz_course_card_view_quiz_details_button">View</string>
+    <string name="action_logout">Logout</string>
 </resources>

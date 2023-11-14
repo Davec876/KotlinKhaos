@@ -1,7 +1,9 @@
 package com.kotlinkhaos.classes.practiceQuiz
 
-import com.kotlinkhaos.classes.User
+import com.google.firebase.FirebaseNetworkException
+import com.kotlinkhaos.classes.errors.PracticeQuizNetworkError
 import com.kotlinkhaos.classes.services.KotlinKhaosPracticeQuizApi
+import com.kotlinkhaos.classes.user.User
 
 class PracticeQuiz private constructor(
     private val id: String,
@@ -12,10 +14,17 @@ class PracticeQuiz private constructor(
 ) {
     companion object {
         suspend fun start(prompt: String): PracticeQuiz {
-            val token = User.getJwt()
-            val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
-            val res = kotlinKhaosApi.startPracticeQuiz(prompt)
-            return PracticeQuiz(res.practiceQuizId, res.problem, "", 1, 0)
+            try {
+                val token = User.getJwt()
+                val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
+                val res = kotlinKhaosApi.startPracticeQuiz(prompt)
+                return PracticeQuiz(res.practiceQuizId, res.problem, "", 1, 0)
+            } catch (err: Exception) {
+                if (err is FirebaseNetworkException) {
+                    throw PracticeQuizNetworkError()
+                }
+                throw err
+            }
         }
     }
 
@@ -52,24 +61,38 @@ class PracticeQuiz private constructor(
     }
 
     suspend fun sendAnswer(answer: String) {
-        val token = User.getJwt()
-        val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
-        val res = kotlinKhaosApi.sendPracticeQuizAnswer(this.getId(), answer)
-        setFeedback(res.feedback)
+        try {
+            val token = User.getJwt()
+            val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
+            val res = kotlinKhaosApi.sendPracticeQuizAnswer(this.getId(), answer)
+            setFeedback(res.feedback)
+        } catch (err: Exception) {
+            if (err is FirebaseNetworkException) {
+                throw PracticeQuizNetworkError()
+            }
+            throw err
+        }
     }
 
     suspend fun continuePracticeQuiz(): Boolean {
-        val token = User.getJwt()
-        val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
-        val res = kotlinKhaosApi.continuePracticeQuiz(this.getId())
-        if (res.problem != null) {
-            setQuestion(res.problem)
-            incrementQuestionNumber()
-            return true
+        try {
+            val token = User.getJwt()
+            val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
+            val res = kotlinKhaosApi.continuePracticeQuiz(this.getId())
+            if (res.problem != null) {
+                setQuestion(res.problem)
+                incrementQuestionNumber()
+                return true
+            }
+            if (res.score != null) {
+                finalScore = res.score
+            }
+            return false
+        } catch (err: Exception) {
+            if (err is FirebaseNetworkException) {
+                throw PracticeQuizNetworkError()
+            }
+            throw err
         }
-        if (res.score != null) {
-            finalScore = res.score
-        }
-        return false
     }
 }
