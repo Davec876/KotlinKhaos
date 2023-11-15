@@ -7,6 +7,7 @@ import com.kotlinkhaos.classes.errors.PracticeQuizNetworkError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
@@ -42,7 +43,7 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in startPracticeQuiz", err)
-            if (err is UnresolvedAddressException) {
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
                 throw PracticeQuizNetworkError()
             }
             throw err
@@ -61,7 +62,7 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in getPractice", err)
-            if (err is UnresolvedAddressException) {
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
                 throw PracticeQuizNetworkError()
             }
             throw err
@@ -83,7 +84,7 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in sendPracticeQuizAnswer", err)
-            if (err is UnresolvedAddressException) {
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
                 throw PracticeQuizNetworkError()
             }
             throw err
@@ -103,7 +104,7 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in continuePracticeQuiz", err)
-            if (err is UnresolvedAddressException) {
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
                 throw PracticeQuizNetworkError()
             }
             throw err

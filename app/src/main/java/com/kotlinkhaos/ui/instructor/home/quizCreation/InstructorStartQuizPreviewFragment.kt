@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlinkhaos.R
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
-import com.kotlinkhaos.classes.errors.QuizError
+import com.kotlinkhaos.classes.errors.InstructorQuizError
 import com.kotlinkhaos.databinding.FragmentInstructorStartQuizPreviewBinding
 
 class InstructorStartQuizPreviewFragment : Fragment() {
@@ -64,7 +64,7 @@ class InstructorStartQuizPreviewFragment : Fragment() {
 
         quizCreationViewModel.quizError.observe(viewLifecycleOwner) { err ->
             if (err != null) {
-                if (err is FirebaseAuthError || err is QuizError) {
+                if (err is FirebaseAuthError || err is InstructorQuizError) {
                     setLoadingState(false)
                     binding.errorMessage.text = err.message
                     return@observe

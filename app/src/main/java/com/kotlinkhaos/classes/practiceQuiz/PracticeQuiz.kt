@@ -8,9 +8,9 @@ import com.kotlinkhaos.classes.user.User
 class PracticeQuiz private constructor(
     private val id: String,
     private var question: String,
-    private var feedback: String,
     private var currentQuestionNumber: Int,
-    private var finalScore: Int,
+    private var feedback: String?,
+    private var finalScore: Int?,
 ) {
     companion object {
         suspend fun start(prompt: String): PracticeQuiz {
@@ -18,7 +18,13 @@ class PracticeQuiz private constructor(
                 val token = User.getJwt()
                 val kotlinKhaosApi = KotlinKhaosPracticeQuizApi(token)
                 val res = kotlinKhaosApi.startPracticeQuiz(prompt)
-                return PracticeQuiz(res.practiceQuizId, res.problem, "", 1, 0)
+                return PracticeQuiz(
+                    res.practiceQuizId,
+                    res.problem,
+                    currentQuestionNumber = 1,
+                    feedback = null,
+                    finalScore = null
+                )
             } catch (err: Exception) {
                 if (err is FirebaseNetworkException) {
                     throw PracticeQuizNetworkError()
@@ -36,7 +42,7 @@ class PracticeQuiz private constructor(
         return this.question;
     }
 
-    fun getFeedback(): String {
+    fun getFeedback(): String? {
         return this.feedback
     }
 
@@ -44,7 +50,11 @@ class PracticeQuiz private constructor(
         return this.currentQuestionNumber;
     }
 
-    fun getFinalScore(): Int {
+    private fun setFinalScore(finalScore: Int) {
+        this.finalScore = finalScore
+    }
+
+    fun getFinalScore(): Int? {
         return this.finalScore
     }
 
@@ -85,7 +95,7 @@ class PracticeQuiz private constructor(
                 return true
             }
             if (res.score != null) {
-                finalScore = res.score
+                setFinalScore(res.score)
             }
             return false
         } catch (err: Exception) {

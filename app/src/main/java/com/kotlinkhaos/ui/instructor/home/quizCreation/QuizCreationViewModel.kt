@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kotlinkhaos.classes.quiz.InstructorQuiz
-import com.kotlinkhaos.classes.services.QuizCreateReq
+import com.kotlinkhaos.classes.services.InstructorQuizCreateReq
 import kotlinx.coroutines.launch
 
 class QuizCreationViewModel : ViewModel() {
@@ -22,7 +22,7 @@ class QuizCreationViewModel : ViewModel() {
     private var _quizStarted = MutableLiveData(false)
     val quizStarted: LiveData<Boolean> = _quizStarted
 
-    fun createNewQuiz(options: QuizCreateReq.Options) {
+    fun createNewQuiz(options: InstructorQuizCreateReq.Options) {
         viewModelScope.launch {
             try {
                 val quiz = InstructorQuiz.createQuiz(options)

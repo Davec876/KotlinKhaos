@@ -1,11 +1,11 @@
 package com.kotlinkhaos.classes.quiz
 
 import com.google.firebase.FirebaseNetworkException
-import com.kotlinkhaos.classes.errors.QuizCreationError
-import com.kotlinkhaos.classes.errors.QuizNetworkError
+import com.kotlinkhaos.classes.errors.InstructorQuizCreationError
+import com.kotlinkhaos.classes.errors.InstructorQuizNetworkError
+import com.kotlinkhaos.classes.services.InstructorQuizCreateReq
+import com.kotlinkhaos.classes.services.InstructorQuizsForCourseRes
 import com.kotlinkhaos.classes.services.KotlinKhaosQuizInstructorApi
-import com.kotlinkhaos.classes.services.QuizCreateReq
-import com.kotlinkhaos.classes.services.QuizsForCourseRes
 import com.kotlinkhaos.classes.user.User
 
 class InstructorQuiz private constructor(
@@ -15,14 +15,14 @@ class InstructorQuiz private constructor(
     private var questions: MutableList<String>
 ) {
     companion object {
-        private fun validateQuizCreateOptions(quizCreateOptions: QuizCreateReq.Options) {
+        private fun validateQuizCreateOptions(quizCreateOptions: InstructorQuizCreateReq.Options) {
             if (quizCreateOptions.name.isEmpty() || quizCreateOptions.prompt.isEmpty()) {
-                throw QuizCreationError("Name and prompt must not be empty")
+                throw InstructorQuizCreationError("Name and prompt must not be empty")
             }
         }
 
         suspend fun createQuiz(
-            quizCreateOptions: QuizCreateReq.Options
+            quizCreateOptions: InstructorQuizCreateReq.Options
         ): InstructorQuiz {
             try {
                 validateQuizCreateOptions(quizCreateOptions)
@@ -38,19 +38,19 @@ class InstructorQuiz private constructor(
                 )
             } catch (err: Exception) {
                 if (err is FirebaseNetworkException) {
-                    throw QuizNetworkError()
+                    throw InstructorQuizNetworkError()
                 }
                 throw err
             }
         }
 
-        suspend fun getQuizsForCourse(): List<QuizsForCourseRes.QuizDetailsRes> {
+        suspend fun getQuizsForCourse(): List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes> {
             try {
                 val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(User.getJwt())
-                return kotlinKhaosApi.getQuizsForCourse().quizs
+                return kotlinKhaosApi.getCourseQuizsForInstructor().quizs
             } catch (err: Exception) {
                 if (err is FirebaseNetworkException) {
-                    throw QuizNetworkError()
+                    throw InstructorQuizNetworkError()
                 }
                 throw err
             }
@@ -89,7 +89,7 @@ class InstructorQuiz private constructor(
             appendQuestion(res.question)
         } catch (err: Exception) {
             if (err is FirebaseNetworkException) {
-                throw QuizNetworkError()
+                throw InstructorQuizNetworkError()
             }
             throw err
         }
@@ -103,7 +103,7 @@ class InstructorQuiz private constructor(
             setQuestions(questions)
         } catch (err: Exception) {
             if (err is FirebaseNetworkException) {
-                throw QuizNetworkError()
+                throw InstructorQuizNetworkError()
             }
             throw err
         }
@@ -116,7 +116,7 @@ class InstructorQuiz private constructor(
             kotlinKhaosApi.startQuiz(this.getQuizId())
         } catch (err: Exception) {
             if (err is FirebaseNetworkException) {
-                throw QuizNetworkError()
+                throw InstructorQuizNetworkError()
             }
             throw err
         }
@@ -129,7 +129,7 @@ class InstructorQuiz private constructor(
             kotlinKhaosApi.finishQuiz(this.getQuizId())
         } catch (err: Exception) {
             if (err is FirebaseNetworkException) {
-                throw QuizNetworkError()
+                throw InstructorQuizNetworkError()
             }
             throw err
         }

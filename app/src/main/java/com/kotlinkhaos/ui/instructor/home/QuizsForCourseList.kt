@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kotlinkhaos.R
-import com.kotlinkhaos.classes.services.QuizsForCourseRes
+import com.kotlinkhaos.classes.services.InstructorQuizsForCourseRes
 
 class QuizsForCourseListAdapter(
-    private var dataSet: List<QuizsForCourseRes.QuizDetailsRes>
+    private var dataSet: List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes>
 ) :
     RecyclerView.Adapter<QuizsForCourseListAdapter.ViewHolder>() {
 
@@ -45,7 +45,7 @@ class QuizsForCourseListAdapter(
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
 
-    fun updateData(newQuizList: List<QuizsForCourseRes.QuizDetailsRes>) {
+    fun updateData(newQuizList: List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes>) {
         dataSet = newQuizList
         notifyDataSetChanged()
     }

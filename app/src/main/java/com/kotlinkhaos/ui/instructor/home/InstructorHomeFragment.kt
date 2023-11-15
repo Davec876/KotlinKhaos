@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
-import com.kotlinkhaos.classes.errors.QuizError
+import com.kotlinkhaos.classes.errors.InstructorQuizError
 import com.kotlinkhaos.classes.quiz.InstructorQuiz
 import com.kotlinkhaos.databinding.FragmentInstructorHomeBinding
 import kotlinx.coroutines.launch
@@ -62,7 +62,7 @@ class InstructorHomeFragment : Fragment() {
                 quizsForCourseListAdapter.updateData(quizs)
                 binding.quizsForCourseList.setHasFixedSize(true) // fixed list performance optimization
             } catch (err: Exception) {
-                if (err is FirebaseAuthError || err is QuizError) {
+                if (err is FirebaseAuthError || err is InstructorQuizError) {
                     binding.errorMessage.text = err.message
                     return@launch
                 }

@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
-import com.kotlinkhaos.classes.errors.QuizError
-import com.kotlinkhaos.classes.services.QuizCreateReq
+import com.kotlinkhaos.classes.errors.InstructorQuizError
+import com.kotlinkhaos.classes.services.InstructorQuizCreateReq
 import com.kotlinkhaos.databinding.FragmentInstructorCreateQuizBinding
 
 class InstructorCreateQuizFragment : Fragment() {
@@ -43,7 +43,7 @@ class InstructorCreateQuizFragment : Fragment() {
         quizCreationViewModel.quizError.observe(viewLifecycleOwner) { err ->
             if (err != null) {
                 setLoadingState(false)
-                if (err is FirebaseAuthError || err is QuizError) {
+                if (err is FirebaseAuthError || err is InstructorQuizError) {
                     binding.errorMessage.text = err.message
                     return@observe
                 }
@@ -65,7 +65,7 @@ class InstructorCreateQuizFragment : Fragment() {
         val quizPrompt = binding.inputQuizPrompt.text.toString().trim()
         val quizQuestionLimit = binding.quizQuestionLimitSlider.value.toInt()
         val quizCreateOptions =
-            QuizCreateReq.Options(quizName, quizQuestionLimit, quizPrompt)
+            InstructorQuizCreateReq.Options(quizName, quizQuestionLimit, quizPrompt)
         quizCreationViewModel.createNewQuiz(quizCreateOptions)
     }
 

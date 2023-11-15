@@ -1,12 +1,13 @@
 package com.kotlinkhaos.classes.services;
 
 import android.util.Log
+import com.kotlinkhaos.classes.errors.InstructorQuizApiError
+import com.kotlinkhaos.classes.errors.InstructorQuizNetworkError
 import com.kotlinkhaos.classes.errors.KotlinKhaosApiError
-import com.kotlinkhaos.classes.errors.QuizApiError
-import com.kotlinkhaos.classes.errors.QuizNetworkError
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
@@ -34,17 +35,17 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
-    suspend fun createQuiz(quizCreateOptions: QuizCreateReq.Options): QuizCreateRes {
+    suspend fun createQuiz(quizCreateOptions: InstructorQuizCreateReq.Options): InstructorQuizCreateRes {
         try {
             val res = client.post("$apiHost/instructor/quizs") {
-                setBody(QuizCreateReq(quizCreateOptions))
+                setBody(InstructorQuizCreateReq(quizCreateOptions))
                 addRequiredApiHeaders()
             }
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in startQuiz", err)
-            if (err is UnresolvedAddressException) {
-                throw QuizNetworkError()
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
+                throw InstructorQuizNetworkError()
             }
             throw err
         } finally {
@@ -52,7 +53,7 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
-    suspend fun nextQuestion(quizId: String): QuizNextQuestionRes {
+    suspend fun nextQuestion(quizId: String): InstructorQuizNextQuestionRes {
         try {
             val res =
                 client.post("$apiHost/instructor/quizs/$quizId/next-question") {
@@ -61,8 +62,8 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in nextQuestion", err)
-            if (err is UnresolvedAddressException) {
-                throw QuizNetworkError()
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
+                throw InstructorQuizNetworkError()
             }
             throw err
         } finally {
@@ -70,18 +71,21 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
-    suspend fun editQuestions(quizId: String, questions: List<String>): QuizEditQuestionRes {
+    suspend fun editQuestions(
+        quizId: String,
+        questions: List<String>
+    ): InstructorQuizEditQuestionRes {
         try {
             val res =
                 client.put("$apiHost/instructor/quizs/$quizId/edit") {
-                    setBody(QuizEditQuestionReq(questions))
+                    setBody(InstructorQuizEditQuestionReq(questions))
                     addRequiredApiHeaders()
                 }
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in editQuestions", err)
-            if (err is UnresolvedAddressException) {
-                throw QuizNetworkError()
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
+                throw InstructorQuizNetworkError()
             }
             throw err
         } finally {
@@ -89,7 +93,7 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
-    suspend fun startQuiz(quizId: String): QuizStartRes {
+    suspend fun startQuiz(quizId: String): InstructorQuizStartRes {
         try {
             val res = client.post("$apiHost/instructor/quizs/$quizId/start") {
                 addRequiredApiHeaders()
@@ -97,8 +101,8 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in startQuiz", err)
-            if (err is UnresolvedAddressException) {
-                throw QuizNetworkError()
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
+                throw InstructorQuizNetworkError()
             }
             throw err
         } finally {
@@ -106,7 +110,7 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
-    suspend fun finishQuiz(quizId: String): QuizFinishRes {
+    suspend fun finishQuiz(quizId: String): InstructorQuizFinishRes {
         try {
             val res = client.post("$apiHost/instructor/quizs/$quizId/finish") {
                 addRequiredApiHeaders()
@@ -114,8 +118,8 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in finishQuiz", err)
-            if (err is UnresolvedAddressException) {
-                throw QuizNetworkError()
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
+                throw InstructorQuizNetworkError()
             }
             throw err
         } finally {
@@ -123,7 +127,7 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
-    suspend fun getQuizsForCourse(): QuizsForCourseRes {
+    suspend fun getCourseQuizsForInstructor(): InstructorQuizsForCourseRes {
         try {
             val res = client.get("$apiHost/instructor/course/quizs") {
                 addRequiredApiHeaders()
@@ -131,8 +135,8 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return parseResponseFromApi(res)
         } catch (err: Exception) {
             Log.e("KotlinKhaosApi", "Error in getQuizsForACourse", err)
-            if (err is UnresolvedAddressException) {
-                throw QuizNetworkError()
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
+                throw InstructorQuizNetworkError()
             }
             throw err
         } finally {
@@ -150,12 +154,12 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
             return res.body()
         }
         val apiError: KotlinKhaosApiError = res.body()
-        throw QuizApiError(apiError.status, apiError.error)
+        throw InstructorQuizApiError(apiError.status, apiError.error)
     }
 }
 
 @Serializable
-data class QuizCreateReq(
+data class InstructorQuizCreateReq(
     val options: Options
 ) {
     @Serializable
@@ -167,29 +171,29 @@ data class QuizCreateReq(
 }
 
 @Serializable
-data class QuizCreateRes(val quizId: String, val firstQuestion: String)
+data class InstructorQuizCreateRes(val quizId: String, val firstQuestion: String)
 
 @Serializable
-data class QuizNextQuestionRes(val question: String)
+data class InstructorQuizNextQuestionRes(val question: String)
 
 @Serializable
-data class QuizEditQuestionReq(val questions: List<String>)
+data class InstructorQuizEditQuestionReq(val questions: List<String>)
 
 @Serializable
-data class QuizEditQuestionRes(val success: Boolean)
+data class InstructorQuizEditQuestionRes(val success: Boolean)
 
 @Serializable
-data class QuizStartRes(val success: Boolean)
+data class InstructorQuizStartRes(val success: Boolean)
 
 @Serializable
-data class QuizFinishRes(val success: Boolean)
+data class InstructorQuizFinishRes(val success: Boolean)
 
 @Serializable
-data class QuizsForCourseRes(
-    val quizs: List<QuizDetailsRes>
+data class InstructorQuizsForCourseRes(
+    val quizs: List<InstructorQuizDetailsRes>
 ) {
     @Serializable
-    data class QuizDetailsRes(
+    data class InstructorQuizDetailsRes(
         val id: String,
         val name: String,
         val started: Boolean,
