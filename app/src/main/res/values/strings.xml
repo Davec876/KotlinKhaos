@@ -2,8 +2,9 @@
     <string name="app_name">Kotlin Khaos</string>
     <string name="app_slogan">Learn with us!</string>
     <string name="login_button">Login</string>
+    <string name="forgetpassword_button">Reset</string>
     <string name="register_button">Register</string>
-    <string name="login_go_to_signup"><u>Go to signup!</u></string>
+    <string name="login_go_to_signup"><u>New here? Click here to get started!</u></string>
     <string name="placeholder_email">Email</string>
     <string name="placeholder_password">Password</string>
     <string name="logout_button">Logout</string>
@@ -13,6 +14,8 @@
     <string name="title_course">Course</string>
     <string name="title_login">Login</string>
     <string name="title_register">Register</string>
+    <string name="title_forgot_password1">Forgot Password?</string>
+    <string name="title_forgot_password2">Forgot Password</string>
     <string name="fab_add_a_quiz">Add a quiz</string>
     <string name="title_create_quiz">Create Quiz</string>
     <string name="generate_quiz_button">Generate Quiz!</string>
@@ -33,4 +36,7 @@
     <string name="register">Register</string>
     <string name="student">Student</string>
     <string name="instructor">Instructor</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="please_enter_the_email_address_you_wish_to_reset_the_password_for">Please enter the email you wish to reset</string>
 </resources>

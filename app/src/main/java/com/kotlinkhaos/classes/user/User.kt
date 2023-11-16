@@ -98,6 +98,11 @@ class User private constructor(
             createUserDetails(result.user!!.uid, userDetails)
             return User(result.user!!.uid, userDetails.courseId, userDetails.name, userDetails.type)
         }
+         fun sendForgotPasswordEmail(email: String) {
+            val mAuth = FirebaseAuth.getInstance()
+            mAuth.sendPasswordResetEmail(email)
+        }
+
 
         suspend fun getUser(): User? {
             try {

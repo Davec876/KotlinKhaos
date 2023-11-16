@@ -54,7 +54,6 @@ class RegisterFragment : Fragment() {
                     startActivity(intent)
                     requireActivity().finish()
                 }
-
             } catch (err: Exception) {
                 if (err is FirebaseAuthError) {
                     binding.errorMessage.text = err.message

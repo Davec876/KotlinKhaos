@@ -34,6 +34,9 @@ class LoginFragment : Fragment() {
         binding.goToRegister.setOnClickListener {
             handleGoToRegister()
         }
+        binding.goToForgetPassword.setOnClickListener{
+            handleGoToForgetPassword()
+        }
 
         return root
     }
@@ -64,9 +67,12 @@ class LoginFragment : Fragment() {
 
         }
     }
-
     private fun handleGoToRegister() {
         val action = LoginFragmentDirections.actionGoToRegister()
+        findNavController().navigate(action)
+    }
+    private fun handleGoToForgetPassword() {
+        val action = LoginFragmentDirections.actionGoToForgetPassword()
         findNavController().navigate(action)
     }
 }
