@@ -2,9 +2,10 @@
     <string name="app_name">Kotlin Khaos</string>
     <string name="app_slogan">Learn with us!</string>
     <string name="login_button">Login</string>
+    <string name="register_button">Register</string>
     <string name="login_go_to_signup"><u>Go to signup!</u></string>
-    <string name="placeholder_email">email</string>
-    <string name="placeholder_password">password</string>
+    <string name="placeholder_email">Email</string>
+    <string name="placeholder_password">Password</string>
     <string name="logout_button">Logout</string>
     <string name="title_home">Home</string>
     <string name="title_practice">Practice</string>
@@ -28,4 +29,5 @@
     <string name="quiz_course_card_placeholder_quiz_name">Placeholder quiz name</string>
     <string name="quiz_course_card_view_quiz_details_button">View</string>
     <string name="action_logout">Logout</string>
+    <string name="name">Name</string>
 </resources>
