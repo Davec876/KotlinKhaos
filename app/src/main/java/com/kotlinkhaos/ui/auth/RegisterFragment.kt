@@ -48,10 +48,7 @@ class RegisterFragment : Fragment() {
                 } else {
                     UserType.INSTRUCTOR
                 }
-
                 val user = User.register(email, password, name, userType)
-
-
                 if (user != null) {
                     val intent = Intent(requireActivity(), MainActivity::class.java)
                     startActivity(intent)
@@ -63,7 +60,7 @@ class RegisterFragment : Fragment() {
                     binding.errorMessage.text = err.message
                     return@launch
                 }
-                binding.errorMessage.text = err.message
+                throw err
             }
         }
     }

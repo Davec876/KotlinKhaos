@@ -30,4 +30,7 @@
     <string name="quiz_course_card_view_quiz_details_button">View</string>
     <string name="action_logout">Logout</string>
     <string name="name">Name</string>
+    <string name="register">Register</string>
+    <string name="student">Student</string>
+    <string name="instructor">Instructor</string>
 </resources>
