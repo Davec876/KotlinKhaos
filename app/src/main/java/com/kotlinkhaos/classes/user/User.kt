@@ -98,9 +98,13 @@ class User private constructor(
             createUserDetails(result.user!!.uid, userDetails)
             return User(result.user!!.uid, userDetails.courseId, userDetails.name, userDetails.type)
         }
-         fun sendForgotPasswordEmail(email: String) {
+
+        suspend fun sendForgotPasswordEmail(email: String) {
+            if (email.isEmpty()) {
+                throw FirebaseAuthError("Email must not be empty")
+            }
             val mAuth = FirebaseAuth.getInstance()
-            mAuth.sendPasswordResetEmail(email)
+            mAuth.sendPasswordResetEmail(email).await()
         }
 
 
