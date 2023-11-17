@@ -29,6 +29,11 @@ class PracticeAttemptFrag : Fragment() {
 
         startPracticeQuiz()
 
+        //converting the edit text to a string
+        binding.buttonGetFeedback.setOnClickListener {
+            val userAnswer = binding.practiceQuizAnswer.text.toString()
+        }
+
         return root
     }
 
@@ -40,6 +45,7 @@ class PracticeAttemptFrag : Fragment() {
                 val quiz = PracticeQuiz.start(inputText)
 //                println(quiz.getQuestion())
                 binding.practiceQuizQuestion.text = quiz.getQuestion()
+                binding.practiceQuizAnswer.text = quiz.getFeedback()
             } catch (err: Exception) {
                 if (err is FirebaseAuthError || err is InstructorQuizError) {
 //                    binding.errorMessage.text = err.message
@@ -49,6 +55,7 @@ class PracticeAttemptFrag : Fragment() {
             }
         }
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

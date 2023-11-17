@@ -43,6 +43,7 @@ class StudentPracticeFragment : Fragment() {
         val editTextContent = binding.editTextLearn.text.toString()
         val action =
             StudentPracticeFragmentDirections.startNavigationPracticeAttempt(editTextContent)
+
         findNavController().navigate(action)
     }
 
