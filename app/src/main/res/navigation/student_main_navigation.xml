@@ -15,11 +15,21 @@
         android:id="@+id/navigation_student_practice"
         android:name="com.kotlinkhaos.ui.student.practice.StudentPracticeFragment"
         android:label="@string/title_practice"
-        tools:layout="@layout/fragment_student_practice" />
+        tools:layout="@layout/fragment_student_practice">
+        <action
+            android:id="@+id/start_navigation_practice_attempt"
+            app:destination="@+id/navigation_student_practice_attempt" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_student_profile"
         android:name="com.kotlinkhaos.ui.student.profile.StudentProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_student_profile" />
+
+    <fragment
+        android:id="@+id/navigation_student_practice_attempt"
+        android:name="com.kotlinkhaos.ui.student.practice.PracticeAttemptFrag"
+        android:label="@string/title_practice_attempt"
+        tools:layout="@layout/fragment_practice_attempt" />
 </navigation>

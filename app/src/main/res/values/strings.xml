@@ -50,4 +50,5 @@
     <string name="quiz_user_attempt_card_placeholder_score">10/10</string>
     <string name="end_quiz_button">End Quiz</string>
     <string name="change_profile_picture">Change</string>
+    <string name="title_practice_attempt">Practice Fragment</string>
 </resources>
