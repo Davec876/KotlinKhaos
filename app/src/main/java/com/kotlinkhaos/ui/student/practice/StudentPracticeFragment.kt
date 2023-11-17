@@ -26,7 +26,6 @@ class StudentPracticeFragment : Fragment() {
             studentPracticeAttemptsNav()
         }
 
-//        continue;
 
         return root
     }
@@ -41,7 +40,10 @@ class StudentPracticeFragment : Fragment() {
     }
 
     private fun studentPracticeAttemptsNav() {
-        val action = StudentPracticeFragmentDirections.startNavigationPracticeAttempt()
+        val editTextContent = binding.editTextLearn.text.toString()
+        val action =
+            StudentPracticeFragmentDirections.startNavigationPracticeAttempt(editTextContent)
         findNavController().navigate(action)
     }
+
 }
