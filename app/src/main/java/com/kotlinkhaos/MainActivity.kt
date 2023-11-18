@@ -16,7 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.kotlinkhaos.classes.user.UserType
-import com.kotlinkhaos.classes.user.viewmodel.UserTypeStore
+import com.kotlinkhaos.classes.user.viewmodel.UserStore
 import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
 import com.kotlinkhaos.classes.user.viewmodel.UserViewModelFactory
 import com.kotlinkhaos.databinding.ActivityMainBinding
@@ -25,7 +25,7 @@ import com.kotlinkhaos.ui.auth.AuthActivity
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val userViewModel: UserViewModel by viewModels {
-        UserViewModelFactory(UserTypeStore(this))
+        UserViewModelFactory(UserStore(this))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,33 +34,33 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setLoading(true)
-        // Initiate loading of user types from both the local store and remote source.
-        // `loadTypeFromStore()` retrieves the user type from the local cache (if available),
-        // `loadType()` fetches the user type from firebase realtime db.
-        userViewModel.loadType()
-        userViewModel.loadTypeFromStore()
-        userViewModel.storedUserType.observe(this) { userType ->
-            // If userType is cached locally, restore from cache
-            if (userType != null) {
-                setupUIBasedOnUserType(userType)
+        // Initiate loading of user details from both the local store and remote source.
+        // `loadDetailsFromStore()` retrieves the user details from the local cache (if available),
+        // `loadDetails()` fetches the user details from firebase realtime db.
+        userViewModel.loadDetailsFromStore()
+        userViewModel.loadDetails()
+        userViewModel.storedUserDetails.observe(this) { storedUserDetails ->
+            // If user details is cached locally, restore from cache
+            if (storedUserDetails != null) {
+                setupUIBasedOnUserType(storedUserDetails.userType)
                 setLoading(false)
             }
         }
 
-        userViewModel.userType.observe(this) { userType ->
-            if (userType == null) {
+        userViewModel.userDetails.observe(this) { userDetails ->
+            if (userDetails == null) {
                 moveToAuthActivity()
                 return@observe
             }
-            // If userType is not cached locally, setup UI based on retrieved type
-            if (userViewModel.storedUserType.value == null) {
-                setupUIBasedOnUserType(userType)
+            // If userDetails is not cached locally, setup UI based on retrieved details
+            if (userViewModel.storedUserDetails.value == null) {
+                setupUIBasedOnUserType(userDetails.userType)
                 setLoading(false)
                 return@observe
             }
-            // If userType is cached locally, but doesn't match retrieved type
-            // restart the activity to fix UI to match the retrieved type
-            if (userType != userViewModel.storedUserType.value && userViewModel.storedUserType.value != null) {
+            // If userDetails is cached locally, but doesn't match retrieved details
+            // restart the activity to fix UI to match the retrieved details
+            if (userDetails != userViewModel.storedUserDetails.value && userViewModel.storedUserDetails.value != null) {
                 val intent = Intent(this, this::class.java)
                 startActivity(intent)
                 finish()
