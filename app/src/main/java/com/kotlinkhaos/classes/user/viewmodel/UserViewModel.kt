@@ -5,38 +5,43 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kotlinkhaos.classes.user.User
-import com.kotlinkhaos.classes.user.UserType
 import kotlinx.coroutines.launch
 
-class UserViewModel(private val userTypeDataStore: UserTypeStore) : ViewModel() {
-    private var _storedUserType = MutableLiveData<UserType?>()
-    val storedUserType: LiveData<UserType?> = _storedUserType
+class UserViewModel(private val userTypeDataStore: UserStore) : ViewModel() {
+    private var _storedUserDetails = MutableLiveData<StoredUserDetails?>()
+    val storedUserDetails: LiveData<StoredUserDetails?> = _storedUserDetails
 
-    private var _userType = MutableLiveData<UserType?>()
-    val userType: LiveData<UserType?> = _userType
+    private var _userDetails = MutableLiveData<StoredUserDetails?>()
+    val userDetails: LiveData<StoredUserDetails?> = _userDetails
 
-    fun loadType() {
+    fun loadDetails() {
         viewModelScope.launch {
             val user = User.getUser()
-            _userType.value = user?.getType()
-            if (user != null) {
-                userTypeDataStore.saveUserType(user.getType())
+            if (user == null) {
+                _userDetails.value = null
+                _storedUserDetails.value = null;
+                userTypeDataStore.clearUserDetails()
+                return@launch
             }
+            val userDetails = StoredUserDetails(user.getCourseId(), user.getType())
+            _userDetails.value = userDetails
+            userTypeDataStore.saveUserDetails(userDetails)
         }
     }
 
-    fun loadTypeFromStore() {
+    fun loadDetailsFromStore() {
         viewModelScope.launch {
-            _storedUserType.value = userTypeDataStore.loadUserType()
+            val storedUserDetails = userTypeDataStore.loadUserDetails()
+            _storedUserDetails.value = storedUserDetails
         }
     }
 
     fun logout() {
         viewModelScope.launch {
             User.logout()
-            userTypeDataStore.clearUserType()
-            _storedUserType.value = null;
-            _userType.value = null;
+            userTypeDataStore.clearUserDetails()
+            _storedUserDetails.value = null;
+            _userDetails.value = null;
         }
     }
 }
