@@ -5,24 +5,28 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.classes.user.UserType
+import com.kotlinkhaos.classes.user.viewmodel.UserTypeStore
+import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
+import com.kotlinkhaos.classes.user.viewmodel.UserViewModelFactory
 import com.kotlinkhaos.databinding.ActivityMainBinding
 import com.kotlinkhaos.ui.auth.AuthActivity
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val userViewModel: UserViewModel by viewModels {
+        UserViewModelFactory(UserTypeStore(this))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,15 +34,38 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setLoading(true)
-        lifecycleScope.launch {
-            val user = User.getUser()
-            // Check if user is signed in (non-null) and update UI accordingly.
-            if (user == null) {
-                moveToAuthActivity()
-                return@launch
+        // Initiate loading of user types from both the local store and remote source.
+        // `loadTypeFromStore()` retrieves the user type from the local cache (if available),
+        // `loadType()` fetches the user type from firebase realtime db.
+        userViewModel.loadType()
+        userViewModel.loadTypeFromStore()
+        userViewModel.storedUserType.observe(this) { userType ->
+            // If userType is cached locally, restore from cache
+            if (userType != null) {
+                setupUIBasedOnUserType(userType)
+                setLoading(false)
             }
-            setupUIBasedOnUserType(user.getType())
-            setLoading(false)
+        }
+
+        userViewModel.userType.observe(this) { userType ->
+            if (userType == null) {
+                moveToAuthActivity()
+                return@observe
+            }
+            // If userType is not cached locally, setup UI based on retrieved type
+            if (userViewModel.storedUserType.value == null) {
+                setupUIBasedOnUserType(userType)
+                setLoading(false)
+                return@observe
+            }
+            // If userType is cached locally, but doesn't match retrieved type
+            // restart the activity to fix UI to match the retrieved type
+            if (userType != userViewModel.storedUserType.value && userViewModel.storedUserType.value != null) {
+                val intent = Intent(this, this::class.java)
+                startActivity(intent)
+                finish()
+                return@observe
+            }
         }
     }
 
@@ -143,7 +170,7 @@ class MainActivity : AppCompatActivity() {
             .setMessage("Are you sure you want to log out?")
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Log Out") { _, _ ->
-                User.logout()
+                userViewModel.logout()
                 val intent = Intent(this, AuthActivity::class.java)
                 startActivity(intent)
                 finish()

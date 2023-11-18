@@ -140,6 +140,12 @@ class User private constructor(
                 ?: throw Exception("Error getting token!")
         }
 
+        /**
+         * Logs out the current user from FirebaseAuth.
+         *
+         * Warning: This method should only be called from within UserViewModel to ensure that
+         * the UserTypeStore does not get out of sync with the FirebaseAuth state.
+         */
         fun logout() {
             FirebaseAuth.getInstance().signOut()
         }
