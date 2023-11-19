@@ -60,6 +60,7 @@ dependencies {
     implementation("io.ktor:ktor-client-cio:2.3.5")
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.5")
     implementation("io.ktor:ktor-client-content-negotiation:2.3.5")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.firebase:firebase-database:20.3.0")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")

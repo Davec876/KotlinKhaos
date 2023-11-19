@@ -1,13 +1,19 @@
 package com.kotlinkhaos.classes.user
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import com.google.firebase.FirebaseException
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.getValue
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
+import com.kotlinkhaos.classes.errors.UserCreateStreamError
+import com.kotlinkhaos.classes.errors.UserNetworkError
+import com.kotlinkhaos.classes.services.KotlinKhaosUserApi
 import kotlinx.coroutines.tasks.await
 
 enum class UserType {
@@ -107,7 +113,6 @@ class User private constructor(
             mAuth.sendPasswordResetEmail(email).await()
         }
 
-
         suspend fun getUser(): User? {
             try {
                 val mAuth = FirebaseAuth.getInstance()
@@ -128,6 +133,40 @@ class User private constructor(
                     return null
                 }
                 throw err;
+            }
+        }
+
+        fun getProfilePicture(userId: String): String {
+            return "https://images.maximoguk.com/kotlin-khaos/profile/picture/${userId}"
+        }
+
+        /**
+         * Get profile picture for currently logged in user
+         */
+        fun getProfilePicture(): String {
+            val mAuth = FirebaseAuth.getInstance()
+            val loadedFirebaseUser =
+                mAuth.currentUser ?: throw FirebaseAuthError("User is not logged in!")
+            val userId = loadedFirebaseUser.uid
+            return "https://images.maximoguk.com/kotlin-khaos/profile/picture/${userId}"
+        }
+
+        suspend fun uploadProfilePicture(context: Context, imageUri: Uri) {
+            try {
+                val token = getJwt()
+                val kotlinKhaosApi = KotlinKhaosUserApi()
+                val uploadUrl =
+                    kotlinKhaosApi.getPresignedProfilePictureUploadUrl(token).uploadUrl
+                val s3Api = KotlinKhaosUserApi()
+
+                context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
+                    s3Api.uploadImageToS3(inputStream, uploadUrl)
+                } ?: throw UserCreateStreamError()
+            } catch (err: Exception) {
+                if (err is FirebaseNetworkException) {
+                    throw UserNetworkError()
+                }
+                throw err
             }
         }
 

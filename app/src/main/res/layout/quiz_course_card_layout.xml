@@ -16,12 +16,11 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/avatarIcon"
             android:layout_width="40dp"
-            android:tint="@color/gray"
             android:layout_height="40dp"
             android:layout_gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/account_circle_black_24dp" />
+            app:srcCompat="@drawable/account_circle_gray_24dp" />
 
         <TextView
             android:id="@+id/quizName"
