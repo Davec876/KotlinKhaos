@@ -36,4 +36,10 @@
             android:name="prompt"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/navigation_student_join_course"
+        android:name="com.kotlinkhaos.ui.student.joinCourse.StudentJoinCourseFragment"
+        android:label="@string/title_join_course"
+        tools:layout="@layout/fragment_student_join_course" />
 </navigation>

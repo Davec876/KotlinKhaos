@@ -43,6 +43,7 @@
     <string name="compliment">Wow CSCI 4146 Student, you\'re on fire 🔥!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="please_enter_the_email_address_you_wish_to_reset_the_password_for">Please enter the email you wish to reset</string>
+<<<<<<< HEAD
     <string name="quiz_details_placeholder_quiz_name">Placeholder Quiz Name</string>
     <string name="quiz_user_attempt_card_view_attempt_button">View Attempt</string>
     <string name="quiz_user_attempt_card_placeholder_user_name">Placeholder Username</string>
@@ -62,4 +63,6 @@
     <string name="practice_quiz_question_number_final_score">%1$d/10</string>
     <string name="practice_quiz_final_score">Final Score 🎉</string>
     <string name="student_profile_hi_there">Hi There,</string>
+    <string name="title_create_course">Create Course</string>
+    <string name="title_join_course">Join Course</string>
 </resources>

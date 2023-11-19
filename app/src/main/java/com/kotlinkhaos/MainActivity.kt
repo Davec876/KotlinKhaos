@@ -2,6 +2,8 @@ package com.kotlinkhaos
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -42,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         userViewModel.storedUserDetails.observe(this) { storedUserDetails ->
             // If user details is cached locally, restore from cache
             if (storedUserDetails != null) {
-                setupUIBasedOnUserType(storedUserDetails.userType)
+                setupUIBasedOnUserType(storedUserDetails.userCourseId, storedUserDetails.userType)
                 setLoading(false)
             }
         }
@@ -54,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             }
             // If userDetails is not cached locally, setup UI based on retrieved details
             if (userViewModel.storedUserDetails.value == null) {
-                setupUIBasedOnUserType(userDetails.userType)
+                setupUIBasedOnUserType(userDetails.userCourseId, userDetails.userType)
                 setLoading(false)
                 return@observe
             }
@@ -69,20 +71,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupUIBasedOnUserType(userType: UserType) {
+    private fun setupUIBasedOnUserType(courseId: String, userType: UserType) {
         val navView: BottomNavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-
         // If user is an instructor, setup instructor navigation
         if (userType == UserType.INSTRUCTOR) {
             navView.inflateMenu(R.menu.instructor_bottom_nav_menu)
-            navController.graph =
-                navController.navInflater.inflate(R.navigation.instructor_main_navigation)
+            val graph = navController.navInflater.inflate(R.navigation.instructor_main_navigation)
+            // Configure create course as start destination if courseId is empty
+            if (courseId.isEmpty()) {
+                graph.setStartDestination(R.id.navigation_instructor_create_course)
+                Handler(Looper.getMainLooper()).post {
+                    navView.visibility = View.GONE
+                }
+            } else {
+                graph.setStartDestination(R.id.navigation_instructor_home)
+            }
+            // Set the graph after configuring the start destination
+            navController.graph = graph
             // Passing each menu ID as a set of Ids because each
             // menu should be considered as top level destinations.
             val appBarConfiguration = AppBarConfiguration(
                 setOf(
-                    R.id.navigation_instructor_home, R.id.navigation_instructor_course
+                    R.id.navigation_instructor_create_course,
+                    R.id.navigation_instructor_home,
+                    R.id.navigation_instructor_course
                 )
             )
             navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -97,13 +110,24 @@ class MainActivity : AppCompatActivity() {
         } else {
             // If user is a student, setup student navigation
             navView.inflateMenu(R.menu.student_bottom_nav_menu)
-            navController.graph =
-                navController.navInflater.inflate(R.navigation.student_main_navigation)
+            val graph = navController.navInflater.inflate(R.navigation.student_main_navigation)
+            // Configure join course as start destination if courseId is empty
+            if (courseId.isEmpty()) {
+                graph.setStartDestination(R.id.navigation_student_join_course)
+                Handler(Looper.getMainLooper()).post {
+                    navView.visibility = View.GONE
+                }
+            } else {
+                graph.setStartDestination(R.id.navigation_student_home)
+            }
+            // Set the graph after configuring the start destination
+            navController.graph = graph
             val appBarConfiguration = AppBarConfiguration(
                 setOf(
+                    R.id.navigation_student_join_course,
                     R.id.navigation_student_home,
                     R.id.navigation_student_practice,
-                    R.id.navigation_student_profile
+                    R.id.navigation_student_profile,
                 )
             )
             navController.addOnDestinationChangedListener { _, destination, _ ->

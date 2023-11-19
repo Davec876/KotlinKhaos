@@ -71,5 +71,11 @@
         android:name="com.kotlinkhaos.ui.instructor.course.InstructorCourseFragment"
         android:label="@string/title_course"
         tools:layout="@layout/fragment_instructor_course" />
+    <fragment
+        android:id="@+id/navigation_instructor_create_course"
+        android:name="com.kotlinkhaos.ui.instructor.createCourse.InstructorCreateCourseFragment"
+        android:label="@string/title_create_course"
+        tools:layout="@layout/fragment_instructor_create_course" />
+
 
 </navigation>
