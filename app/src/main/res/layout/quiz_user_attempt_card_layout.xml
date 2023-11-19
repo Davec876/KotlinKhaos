@@ -24,22 +24,33 @@
             app:srcCompat="@drawable/account_circle_black_24dp" />
 
         <TextView
-            android:id="@+id/quizName"
+            android:id="@+id/quizAttemptUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="@string/quiz_course_card_placeholder_quiz_name"
+            android:text="@string/quiz_user_attempt_card_placeholder_user_name"
             android:textColor="@color/black"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="16sp"
             app:layout_constraintStart_toEndOf="@+id/avatarIcon"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/quizAttemptScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/quiz_user_attempt_card_placeholder_score"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@+id/avatarIcon"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/viewQuizDetailsButton"
-            android:layout_width="72dp"
-            android:layout_height="48dp"
-            android:text="@string/quiz_course_card_view_quiz_details_button"
+            android:id="@+id/viewUserAttemptButton"
+            android:layout_width="110dp"
+            android:layout_height="60dp"
+            android:text="@string/quiz_user_attempt_card_view_attempt_button"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             app:strokeColor="@color/blue"
             android:textColor="@color/blue"

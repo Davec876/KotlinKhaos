@@ -18,6 +18,8 @@
     <string name="title_forgot_password2">Forgot Password</string>
     <string name="fab_add_a_quiz">Add a quiz</string>
     <string name="title_create_quiz">Create Quiz</string>
+    <string name="title_quiz_details">Quiz Details</string>
+    <string name="title_quiz_view_user_attempt">User Attempt</string>
     <string name="generate_quiz_button">Generate Quiz!</string>
     <string name="create_a_quiz">Create a quiz!</string>
     <string name="placeholder_quiz_name">Quiz Name</string>
@@ -39,4 +41,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="please_enter_the_email_address_you_wish_to_reset_the_password_for">Please enter the email you wish to reset</string>
+    <string name="quiz_details_placeholder_quiz_name">Placeholder Quiz Name</string>
+    <string name="quiz_user_attempt_card_view_attempt_button">View Attempt</string>
+    <string name="quiz_user_attempt_card_placeholder_user_name">Placeholder Username</string>
+    <string name="quiz_user_attempt_card_placeholder_score">10/10</string>
+    <string name="end_quiz_button">End Quiz</string>
 </resources>

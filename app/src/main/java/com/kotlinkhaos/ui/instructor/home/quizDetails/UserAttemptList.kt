@@ -1,4 +1,4 @@
-package com.kotlinkhaos.ui.instructor.home
+package com.kotlinkhaos.ui.instructor.home.quizDetails
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,23 +9,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kotlinkhaos.R
 import com.kotlinkhaos.classes.services.InstructorQuizsForCourseRes
 
-class QuizsForCourseListAdapter(
-    private var dataSet: List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes>,
+class UserAttemptListAdapter(
+    private var dataSet: List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes.UserAttempt>,
     private val clickListener: (String) -> Unit
 ) :
-    RecyclerView.Adapter<QuizsForCourseListAdapter.ViewHolder>() {
+    RecyclerView.Adapter<UserAttemptListAdapter.ViewHolder>() {
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder)
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val quizName: TextView
-        val viewButton: Button
+        val userName: TextView
+        val score: TextView
+        val viewAttemptButton: Button
 
         init {
-            quizName = view.findViewById(R.id.quizName)
-            viewButton = view.findViewById(R.id.viewQuizDetailsButton)
+            userName = view.findViewById(R.id.quizAttemptUserName)
+            score = view.findViewById(R.id.quizAttemptScore)
+            viewAttemptButton = view.findViewById(R.id.viewUserAttemptButton)
         }
     }
 
@@ -33,7 +35,7 @@ class QuizsForCourseListAdapter(
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.quiz_course_card_layout, viewGroup, false)
+            .inflate(R.layout.quiz_user_attempt_card_layout, viewGroup, false)
 
         return ViewHolder(view)
     }
@@ -42,18 +44,14 @@ class QuizsForCourseListAdapter(
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val quiz = dataSet[position]
-        viewHolder.quizName.text = quiz.name
-        viewHolder.viewButton.setOnClickListener {
-            clickListener(quiz.id)
+        val attempt = dataSet[position]
+        viewHolder.userName.text = attempt.studentId
+        viewHolder.score.text = "${attempt.score}/10"
+        viewHolder.viewAttemptButton.setOnClickListener {
+            clickListener(attempt.studentId)
         }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
-
-    fun updateData(newQuizList: List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes>) {
-        dataSet = newQuizList
-        notifyDataSetChanged()
-    }
 }
