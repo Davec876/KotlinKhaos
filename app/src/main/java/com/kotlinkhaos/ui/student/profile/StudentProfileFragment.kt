@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -28,9 +27,6 @@ class StudentProfileFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    //Declare barchart
-    private lateinit var barChart: BarChart
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -83,7 +79,7 @@ class StudentProfileFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 //Initialize barchart, class variable
-                barChart = binding.barChart
+                val barChart = binding.barChart
                 val weeklySummaryRes = StudentQuizAttempt.getWeeklySummaryForStudent()
                 val entries = mutableListOf<BarEntry>()
                 val weekDays = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
