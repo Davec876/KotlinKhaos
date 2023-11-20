@@ -38,8 +38,8 @@ class PracticeAttemptFrag : Fragment() {
                 try {
                     practiceQuiz.sendAnswer(userAnswer)
                     val feedback = practiceQuiz.getFeedback()
-                    binding.practiceQuizAnswer.setText(feedback)
-//                    println(practiceQuiz.getFeedback())
+                    binding.practiceQuizQuestionNumber.text = "Feedback for Question ${practiceQuiz.getCurrentQuestionNumber()}"
+                    binding.practiceQuizQuestion.text = feedback
 
 //                    binding.practiceQuizAnswer.text = practiceQuiz.getFeedback()
                 } catch (err: Exception) {
