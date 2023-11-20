@@ -18,11 +18,7 @@
         tools:layout="@layout/fragment_student_practice">
         <action
             android:id="@+id/start_navigation_practice_attempt"
-            app:destination="@+id/navigation_student_practice_attempt">
-            <argument
-                android:name="prompt"
-                app:argType="string" />
-        </action>
+            app:destination="@+id/navigation_student_practice_attempt" />
     </fragment>
 
     <fragment
@@ -33,11 +29,11 @@
 
     <fragment
         android:id="@+id/navigation_student_practice_attempt"
-        android:name="com.kotlinkhaos.ui.student.practice.PracticeAttemptFrag"
+        android:name="com.kotlinkhaos.ui.student.practice.practiceQuiz.PracticeAttemptFragment"
         android:label="@string/title_practice_attempt"
         tools:layout="@layout/fragment_practice_attempt">
-        <action
-            android:id="@+id/start_navigation_practice_attempt"
-            app:destination="@+id/navigation_student_practice_attempt"></action>
+        <argument
+            android:name="prompt"
+            app:argType="string" />
     </fragment>
 </navigation>

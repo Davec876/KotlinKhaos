@@ -4,22 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.student.practice.PracticeAttemptFrag">
-
-    <!-- TODO: Update blank fragment layout -->
-    <!--    <TextView-->
-    <!--        android:id="@+id/text_practice"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="8dp"-->
-    <!--        android:layout_marginTop="8dp"-->
-    <!--        android:layout_marginEnd="8dp"-->
-    <!--        android:textAlignment="center"-->
-    <!--        android:textSize="20sp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+    tools:context=".ui.student.practice.practiceQuiz.PracticeAttemptFragment">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/practiceCardView"
@@ -30,7 +15,6 @@
         app:cardElevation="4dp"
         app:contentPadding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:strokeColor="@color/black"
@@ -68,6 +52,17 @@
                     app:srcCompat="@drawable/letter_q_black_24dp" />
             </com.google.android.material.card.MaterialCardView>
 
+            <ProgressBar
+                android:id="@+id/practiceQuizQuestionLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@id/practiceQuizQuestion"
+                app:layout_constraintEnd_toEndOf="@id/practiceQuizQuestion"
+                app:layout_constraintStart_toStartOf="@id/practiceQuizQuestion"
+                app:layout_constraintTop_toTopOf="@id/practiceQuizQuestion" />
+
             <TextView
                 android:id="@+id/practiceQuizQuestion"
                 android:layout_width="wrap_content"
@@ -78,40 +73,56 @@
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/practiceFrameLayout" />
-
-
+            
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <EditText
-        android:id="@+id/practiceQuizAnswer"
-        android:layout_width="315dp"
-        android:layout_height="113dp"
-        android:layout_marginTop="28dp"
-        android:hint="Please type your answer here"
-        android:inputType="textMultiLine"
+    <TextView
+        android:id="@+id/errorMessage"
+        android:layout_width="match_parent"
+        android:layout_height="28dp"
+        android:gravity="center"
+        android:textColor="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/practiceCardView" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutPracticeQuizAnswer"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="320dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/practiceCardView">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/practiceQuizAnswer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/please_type_your_answer_here"
+            android:inputType="textMultiLine" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/buttonGetFeedback"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="GET FEEDBACK"
+        android:text="@string/get_feedback_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/practiceQuizAnswer" />
+        app:layout_constraintTop_toBottomOf="@+id/layoutPracticeQuizAnswer" />
 
     <Button
         android:id="@+id/buttonNextQuestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next"
+        android:text="@string/next_button"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonGetFeedback" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

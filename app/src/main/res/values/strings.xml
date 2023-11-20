@@ -41,7 +41,6 @@
     <string name="instructor">Instructor</string>
     <string name="greeting">Hi There,</string>
     <string name="compliment">Wow CSCI 4146 Student, you\'re on fire 🔥!</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="please_enter_the_email_address_you_wish_to_reset_the_password_for">Please enter the email you wish to reset</string>
     <string name="quiz_details_placeholder_quiz_name">Placeholder Quiz Name</string>
@@ -50,5 +49,16 @@
     <string name="quiz_user_attempt_card_placeholder_score">10/10</string>
     <string name="end_quiz_button">End Quiz</string>
     <string name="change_profile_picture">Change</string>
-    <string name="title_practice_attempt">Practice Fragment</string>
+    <string name="title_practice_attempt">Practice Quiz</string>
+    <string name="i_want_to_learn">I want to learn</string>
+    <string name="what_would_you_like_to_learn">What would you like to learn ✨?</string>
+    <string name="custom_practice">Custom Practice</string>
+    <string name="get_feedback_button">Get Feedback</string>
+    <string name="next_button">Next</string>
+    <string name="please_type_your_answer_here">Please type your answer here</string>
+    <string name="question_loading">Loading...</string>
+    <string name="practice_quiz_question_number">Question %1$d</string>
+    <string name="practice_quiz_feedback_for_question">Feedback for Question %1$d</string>
+    <string name="practice_quiz_question_number_final_score">%1$d/10</string>
+    <string name="practice_quiz_final_score">Final Score 🎉</string>
 </resources>

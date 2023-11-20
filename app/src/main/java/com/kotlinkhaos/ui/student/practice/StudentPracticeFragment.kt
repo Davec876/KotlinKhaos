@@ -25,14 +25,8 @@ class StudentPracticeFragment : Fragment() {
         binding.studentPracticeButton.setOnClickListener {
             studentPracticeAttemptsNav()
         }
-
-
         return root
     }
-
-    //life cycle coroutine
-    //call the methods relating to api
-    //
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -40,10 +34,9 @@ class StudentPracticeFragment : Fragment() {
     }
 
     private fun studentPracticeAttemptsNav() {
-        val editTextContent = binding.editTextLearn.text.toString()
+        val prompt = binding.inputQuizPrompt.text.toString().trim()
         val action =
-            StudentPracticeFragmentDirections.startNavigationPracticeAttempt(editTextContent)
-
+            StudentPracticeFragmentDirections.startNavigationPracticeAttempt(prompt)
         findNavController().navigate(action)
     }
 
