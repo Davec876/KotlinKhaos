@@ -76,6 +76,7 @@ class StudentProfileFragment : Fragment() {
     }
 
     private fun loadWeeklySummary() {
+        setLoadingState(true)
         lifecycleScope.launch {
             try {
                 //Initialize barchart, class variable
@@ -142,13 +143,19 @@ class StudentProfileFragment : Fragment() {
                     return@launch
                 }
                 throw err
+            } finally {
+                setLoadingState(false)
             }
         }
     }
 
+    private fun setLoadingState(loading: Boolean) {
+        binding.loadingBarChart.visibility = if (loading) View.VISIBLE else View.GONE
+        binding.barChart.visibility = if (loading) View.GONE else View.VISIBLE
+    }
+
     private fun showCompliment() {
         binding.textProfile.text = resources.getString(R.string.compliment)
-        //binding.textProfile.text = complimentText
     }
 
     override fun onDestroyView() {

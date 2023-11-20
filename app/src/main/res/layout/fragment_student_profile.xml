@@ -31,7 +31,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Hi There,"
+        android:text="@string/student_profile_hi_there"
         android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="32sp"
@@ -50,6 +50,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_profile"
         app:layout_constraintVertical_bias="0.2" />
+
+    <ProgressBar
+        android:id="@+id/loadingBarChart"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/barChart"
+        app:layout_constraintEnd_toEndOf="@+id/barChart"
+        app:layout_constraintStart_toStartOf="@+id/barChart"
+        app:layout_constraintTop_toTopOf="@+id/barChart" />
 
     <TextView
         android:id="@+id/errorMessage"

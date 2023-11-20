@@ -61,4 +61,5 @@
     <string name="practice_quiz_feedback_for_question">Feedback for Question %1$d</string>
     <string name="practice_quiz_question_number_final_score">%1$d/10</string>
     <string name="practice_quiz_final_score">Final Score 🎉</string>
+    <string name="student_profile_hi_there">Hi There,</string>
 </resources>
