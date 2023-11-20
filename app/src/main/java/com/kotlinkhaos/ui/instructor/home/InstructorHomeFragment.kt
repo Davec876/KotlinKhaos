@@ -6,18 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.InstructorQuizError
-import com.kotlinkhaos.classes.quiz.InstructorQuiz
 import com.kotlinkhaos.databinding.FragmentInstructorHomeBinding
-import kotlinx.coroutines.launch
 
 class InstructorHomeFragment : Fragment() {
     private var _binding: FragmentInstructorHomeBinding? = null
     private lateinit var quizsForCourseListAdapter: QuizsForCourseListAdapter
+    private val quizsForCourseViewModel: QuizsForCourseViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -36,7 +35,10 @@ class InstructorHomeFragment : Fragment() {
         binding.refreshQuizForCourseList.setOnRefreshListener {
             loadQuizListForCourse()
         }
-        quizsForCourseListAdapter = QuizsForCourseListAdapter(emptyList())
+        quizsForCourseListAdapter = QuizsForCourseListAdapter(emptyList()) { quizId ->
+            val action = InstructorHomeFragmentDirections.startNavigationQuizDetails(quizId)
+            findNavController().navigate(action)
+        }
         binding.quizsForCourseList.adapter = quizsForCourseListAdapter
         binding.quizsForCourseList.layoutManager = LinearLayoutManager(requireContext())
         binding.quizsForCourseList.addItemDecoration(
@@ -56,19 +58,24 @@ class InstructorHomeFragment : Fragment() {
 
     private fun loadQuizListForCourse() {
         setLoadingState(true)
-        lifecycleScope.launch {
-            try {
-                val quizs = InstructorQuiz.getQuizsForCourse()
+        quizsForCourseViewModel.loadQuizList()
+
+        quizsForCourseViewModel.quizs.observe(viewLifecycleOwner) { quizs ->
+            if (quizs != null) {
                 quizsForCourseListAdapter.updateData(quizs)
                 binding.quizsForCourseList.setHasFixedSize(true) // fixed list performance optimization
-            } catch (err: Exception) {
+                setLoadingState(false)
+            }
+        }
+
+        quizsForCourseViewModel.courseQuizListError.observe(viewLifecycleOwner) { err ->
+            if (err != null) {
+                setLoadingState(false)
                 if (err is FirebaseAuthError || err is InstructorQuizError) {
                     binding.errorMessage.text = err.message
-                    return@launch
+                    return@observe
                 }
                 throw err
-            } finally {
-                setLoadingState(false)
             }
         }
     }

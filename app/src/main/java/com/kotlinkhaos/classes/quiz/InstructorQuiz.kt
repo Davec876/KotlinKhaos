@@ -55,6 +55,19 @@ class InstructorQuiz private constructor(
                 throw err
             }
         }
+
+        suspend fun finish(quizId: String) {
+            try {
+                val token = User.getJwt()
+                val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
+                kotlinKhaosApi.finishQuiz(quizId)
+            } catch (err: Exception) {
+                if (err is FirebaseNetworkException) {
+                    throw InstructorQuizNetworkError()
+                }
+                throw err
+            }
+        }
     }
 
     fun getQuizId(): String {
@@ -114,19 +127,6 @@ class InstructorQuiz private constructor(
             val token = User.getJwt()
             val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
             kotlinKhaosApi.startQuiz(this.getQuizId())
-        } catch (err: Exception) {
-            if (err is FirebaseNetworkException) {
-                throw InstructorQuizNetworkError()
-            }
-            throw err
-        }
-    }
-
-    suspend fun finish() {
-        try {
-            val token = User.getJwt()
-            val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(token)
-            kotlinKhaosApi.finishQuiz(this.getQuizId())
         } catch (err: Exception) {
             if (err is FirebaseNetworkException) {
                 throw InstructorQuizNetworkError()

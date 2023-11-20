@@ -26,7 +26,7 @@ class QuizsForCourseListAdapter(
 
         init {
             quizName = view.findViewById(R.id.quizName)
-            quizButton = view.findViewById(R.id.button)
+            quizButton = view.findViewById(R.id.viewQuizDetailsButton)
         }
     }
 
