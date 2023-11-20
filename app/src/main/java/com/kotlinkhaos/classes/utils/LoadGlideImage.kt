@@ -13,6 +13,19 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.kotlinkhaos.R
 
+fun ImageView.loadImage(url: String) {
+    Glide.with(this.context)
+        .load(url)
+        .apply(
+            RequestOptions()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .placeholder(R.drawable.account_circle_gray_24dp)
+                .error(R.drawable.account_circle_gray_24dp)
+        )
+        .into(this)
+}
+
 fun ImageView.loadImage(url: String, progressBar: ProgressBar) {
     progressBar.visibility = View.VISIBLE
 

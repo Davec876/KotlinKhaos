@@ -4,12 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.kotlinkhaos.R
 import com.kotlinkhaos.classes.services.StudentQuizsForCourseRes
+import com.kotlinkhaos.classes.user.User
+import com.kotlinkhaos.classes.utils.loadImage
 
 class QuizsForCourseListAdapter(
     private var dataSet: List<StudentQuizsForCourseRes.StudentQuizDetailsRes>
@@ -22,10 +25,12 @@ class QuizsForCourseListAdapter(
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val quizName: TextView
+        val avatarIcon: ImageView
         val quizButton: Button
 
         init {
             quizName = view.findViewById(R.id.quizName)
+            avatarIcon = view.findViewById(R.id.avatarIcon)
             quizButton = view.findViewById(R.id.viewQuizDetailsButton)
         }
     }
@@ -46,6 +51,7 @@ class QuizsForCourseListAdapter(
         // contents of the view with that element
         val quiz = dataSet[position]
         viewHolder.quizName.text = quiz.name
+        viewHolder.avatarIcon.loadImage(User.getProfilePicture(quiz.authorId))
 
         if (quiz.usersAttempt != null) {
             viewHolder.quizButton.text = "${quiz.usersAttempt.score}/10"

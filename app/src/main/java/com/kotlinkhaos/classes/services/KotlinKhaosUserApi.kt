@@ -31,7 +31,7 @@ import java.io.InputStream
 import java.nio.channels.UnresolvedAddressException
 
 class KotlinKhaosUserApi {
-    private val apiHost = "https://kotlin-khaos-api.maximoguk.com"
+    private val apiHost = "https://beta-kotlin-khaos-api.maximoguk.com"
     private val client: HttpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(Json {

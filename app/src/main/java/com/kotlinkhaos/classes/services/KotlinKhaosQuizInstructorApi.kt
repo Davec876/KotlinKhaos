@@ -26,7 +26,7 @@ import kotlinx.serialization.json.Json
 import java.nio.channels.UnresolvedAddressException
 
 class KotlinKhaosQuizInstructorApi(private val token: String) {
-    private val apiHost = "https://kotlin-khaos-api.maximoguk.com"
+    private val apiHost = "https://beta-kotlin-khaos-api.maximoguk.com"
     private val client: HttpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(Json {
@@ -195,6 +195,7 @@ data class InstructorQuizsForCourseRes(
     @Serializable
     data class InstructorQuizDetailsRes(
         val id: String,
+        val authorId: String,
         val name: String,
         val started: Boolean,
         val finished: Boolean,
@@ -213,7 +214,8 @@ data class InstructorQuizsForCourseRes(
             val attemptId: String,
             val studentId: String,
             val score: Int,
-            val submittedOn: Instant
+            val submittedOn: Instant,
+            val name: String,
         )
     }
 }

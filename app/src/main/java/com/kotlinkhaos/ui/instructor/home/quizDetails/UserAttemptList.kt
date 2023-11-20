@@ -4,10 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.kotlinkhaos.R
 import com.kotlinkhaos.classes.services.InstructorQuizsForCourseRes
+import com.kotlinkhaos.classes.user.User
+import com.kotlinkhaos.classes.utils.loadImage
 
 class UserAttemptListAdapter(
     private var dataSet: List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes.UserAttempt>,
@@ -21,11 +24,13 @@ class UserAttemptListAdapter(
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val userName: TextView
+        val avatarIcon: ImageView
         val score: TextView
         val viewAttemptButton: Button
 
         init {
             userName = view.findViewById(R.id.quizAttemptUserName)
+            avatarIcon = view.findViewById(R.id.avatarIcon)
             score = view.findViewById(R.id.quizAttemptScore)
             viewAttemptButton = view.findViewById(R.id.viewUserAttemptButton)
         }
@@ -45,7 +50,8 @@ class UserAttemptListAdapter(
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         val attempt = dataSet[position]
-        viewHolder.userName.text = attempt.studentId
+        viewHolder.userName.text = attempt.name
+        viewHolder.avatarIcon.loadImage(User.getProfilePicture(attempt.studentId))
         viewHolder.score.text = "${attempt.score}/10"
         viewHolder.viewAttemptButton.setOnClickListener {
             clickListener(attempt.studentId)
