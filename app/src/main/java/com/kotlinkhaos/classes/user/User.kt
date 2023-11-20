@@ -6,6 +6,7 @@ import android.util.Log
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.database.FirebaseDatabase
@@ -96,13 +97,26 @@ class User private constructor(
         }
 
         suspend fun register(email: String, pass: String, name: String, type: UserType): User? {
-            // When a user is first created, they don't have a courseId
-            val userDetails = UserDetails(courseId = "", name, type)
-            validateRegisterParameters(email, pass, userDetails)
-            val mAuth = FirebaseAuth.getInstance()
-            val result = mAuth.createUserWithEmailAndPassword(email, pass).await() ?: return null
-            createUserDetails(result.user!!.uid, userDetails)
-            return User(result.user!!.uid, userDetails.courseId, userDetails.name, userDetails.type)
+            try {
+                // When a user is first created, they don't have a courseId
+                val userDetails = UserDetails(courseId = "", name, type)
+                validateRegisterParameters(email, pass, userDetails)
+                val mAuth = FirebaseAuth.getInstance()
+                val result =
+                    mAuth.createUserWithEmailAndPassword(email, pass).await() ?: return null
+                createUserDetails(result.user!!.uid, userDetails)
+                return User(
+                    result.user!!.uid,
+                    userDetails.courseId,
+                    userDetails.name,
+                    userDetails.type
+                )
+            } catch (err: Exception) {
+                if (err is FirebaseAuthException) {
+                    throw FirebaseAuthError(err.message!!)
+                }
+                throw err
+            }
         }
 
         suspend fun sendForgotPasswordEmail(email: String) {
