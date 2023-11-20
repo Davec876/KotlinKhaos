@@ -37,7 +37,9 @@ class PracticeAttemptFrag : Fragment() {
             lifecycleScope.launch {
                 try {
                     practiceQuiz.sendAnswer(userAnswer)
-                    println(practiceQuiz.getFeedback())
+                    val feedback = practiceQuiz.getFeedback()
+                    binding.practiceQuizAnswer.setText(feedback)
+//                    println(practiceQuiz.getFeedback())
 
 //                    binding.practiceQuizAnswer.text = practiceQuiz.getFeedback()
                 } catch (err: Exception) {
