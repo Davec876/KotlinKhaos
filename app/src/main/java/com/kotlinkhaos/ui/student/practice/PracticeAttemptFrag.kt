@@ -10,6 +10,7 @@ import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.InstructorQuizError
 import com.kotlinkhaos.classes.practiceQuiz.PracticeQuiz
 import com.kotlinkhaos.databinding.FragmentPracticeAttemptBinding
+import com.kotlinkhaos.ui.instructor.home.QuizsForCourseListAdapter
 import kotlinx.coroutines.launch
 
 class PracticeAttemptFrag : Fragment() {
@@ -18,6 +19,7 @@ class PracticeAttemptFrag : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var practiceQuiz: PracticeQuiz
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,21 +33,34 @@ class PracticeAttemptFrag : Fragment() {
 
         //converting the edit text to a string
         binding.buttonGetFeedback.setOnClickListener {
-            val userAnswer = binding.practiceQuizAnswer.text.toString()
+            val userAnswer = binding.practiceQuizAnswer.text.toString().trim()
+            lifecycleScope.launch {
+                try {
+                    practiceQuiz.sendAnswer(userAnswer)
+                    println(practiceQuiz.getFeedback())
+
+//                    binding.practiceQuizAnswer.text = practiceQuiz.getFeedback()
+                } catch (err: Exception) {
+                    if (err is FirebaseAuthError || err is InstructorQuizError) {
+//                        binding.errorMessage.text = err.message
+                        return@launch
+                    }
+                    throw err
+                }
+            }
         }
 
         return root
     }
 
     private fun startPracticeQuiz() {
-        var string = arguments?.getString("inputText")
-        val inputText = if (string != null) string else ""
+        var string = arguments?.getString("prompt")
+        val prompt = if (string != null) string else ""
         lifecycleScope.launch {
             try {
-                val quiz = PracticeQuiz.start(inputText)
+                practiceQuiz = PracticeQuiz.start(prompt)
 //                println(quiz.getQuestion())
-                binding.practiceQuizQuestion.text = quiz.getQuestion()
-                binding.practiceQuizAnswer.text = quiz.getFeedback()
+                binding.practiceQuizQuestion.text = practiceQuiz.getQuestion()
             } catch (err: Exception) {
                 if (err is FirebaseAuthError || err is InstructorQuizError) {
 //                    binding.errorMessage.text = err.message
