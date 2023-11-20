@@ -1,15 +1,22 @@
 package com.kotlinkhaos.ui.student.home
 
+import SpaceItemDecorationHeight
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kotlinkhaos.classes.errors.FirebaseAuthError
+import com.kotlinkhaos.classes.errors.InstructorQuizError
+import com.kotlinkhaos.classes.quiz.StudentQuizAttempt
 import com.kotlinkhaos.databinding.FragmentStudentHomeBinding
+import kotlinx.coroutines.launch
 
 class StudentHomeFragment : Fragment() {
     private var _binding: FragmentStudentHomeBinding? = null
+    private lateinit var quizsForCourseListAdapter: QuizsForCourseListAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -23,8 +30,20 @@ class StudentHomeFragment : Fragment() {
         _binding = FragmentStudentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        textView.text = "This is student home Fragment"
+
+        binding.refreshQuizForCourseList.setOnRefreshListener {
+            loadQuizListForCourse()
+        }
+        quizsForCourseListAdapter = QuizsForCourseListAdapter(emptyList())
+        binding.quizsForCourseList.adapter = quizsForCourseListAdapter
+        binding.quizsForCourseList.layoutManager = LinearLayoutManager(requireContext())
+        binding.quizsForCourseList.addItemDecoration(
+            SpaceItemDecorationHeight(
+                4
+            )
+        )
+
+        loadQuizListForCourse()
         return root
     }
 
@@ -32,4 +51,31 @@ class StudentHomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    private fun loadQuizListForCourse() {
+        setLoadingState(true)
+        lifecycleScope.launch {
+            try {
+                val quizs = StudentQuizAttempt.getQuizsForCourse()
+                quizsForCourseListAdapter.updateData(quizs)
+                binding.quizsForCourseList.setHasFixedSize(true) // fixed list performance optimization
+            } catch (err: Exception) {
+                if (err is FirebaseAuthError || err is InstructorQuizError) {
+                    binding.errorMessage.text = err.message
+                    return@launch
+                }
+                throw err
+            } finally {
+                setLoadingState(false)
+            }
+        }
+    }
+
+    private fun setLoadingState(loading: Boolean) {
+        binding.refreshQuizForCourseList.post {
+            binding.refreshQuizForCourseList.isRefreshing = loading
+        }
+    }
+
+
 }
