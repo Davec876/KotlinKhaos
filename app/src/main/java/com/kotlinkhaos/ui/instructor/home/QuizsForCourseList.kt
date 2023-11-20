@@ -46,7 +46,8 @@ class QuizsForCourseListAdapter(
     override fun getItemCount() = dataSet.size
 
     fun updateData(newQuizList: List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes>) {
-        dataSet = newQuizList
+        // We want the latest quiz to be the first quiz in the dataset
+        dataSet = newQuizList.reversed()
         notifyDataSetChanged()
     }
 }

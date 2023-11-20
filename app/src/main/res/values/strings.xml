@@ -31,6 +31,7 @@
     <string name="quiz_creation_action_bar_title">Quiz - %1$s</string>
     <string name="quiz_course_card_placeholder_quiz_name">Placeholder quiz name</string>
     <string name="quiz_course_card_view_quiz_details_button">View</string>
+    <string name="quiz_course_card_start_quiz_button">Start</string>
     <string name="action_logout">Logout</string>
     <string name="name">Name</string>
     <string name="register">Register</string>
