@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.InstructorQuizError
+import com.kotlinkhaos.classes.errors.PracticeQuizError
+import com.kotlinkhaos.classes.errors.StudentQuizError
 import com.kotlinkhaos.classes.practiceQuiz.PracticeQuiz
 import com.kotlinkhaos.databinding.FragmentPracticeAttemptBinding
 import com.kotlinkhaos.ui.instructor.home.QuizsForCourseListAdapter
@@ -41,9 +43,9 @@ class PracticeAttemptFrag : Fragment() {
                     binding.practiceQuizQuestionNumber.text = "Feedback for Question ${practiceQuiz.getCurrentQuestionNumber()}"
                     binding.practiceQuizQuestion.text = feedback
 
-//                    binding.practiceQuizAnswer.text = practiceQuiz.getFeedback()
+                    binding.buttonNextQuestion.visibility = View.VISIBLE
                 } catch (err: Exception) {
-                    if (err is FirebaseAuthError || err is InstructorQuizError) {
+                    if (err is FirebaseAuthError || err is PracticeQuizError) {
 //                        binding.errorMessage.text = err.message
                         return@launch
                     }
@@ -51,8 +53,40 @@ class PracticeAttemptFrag : Fragment() {
                 }
             }
         }
+        binding.buttonNextQuestion.setOnClickListener {
+            loadNextQuestion()
+        }
 
         return root
+    }
+
+    private fun loadNextQuestion() {
+        lifecycleScope.launch {
+            try {
+                val nextQuestion = practiceQuiz.continuePracticeQuiz()
+                if (nextQuestion) {
+                    binding.practiceQuizQuestion.text = practiceQuiz.getQuestion()
+                    binding.practiceQuizQuestionNumber.text = "Question ${practiceQuiz.getCurrentQuestionNumber()}"
+                    binding.practiceQuizAnswer.text.clear()
+                    // Hide the Next button until next feedback
+                    binding.buttonNextQuestion.visibility = View.GONE
+                }
+                else {
+                    // Handle the end of quiz scenario
+                    binding.practiceQuizQuestion.text = "${practiceQuiz.getFinalScore()}/10"
+                    binding.practiceQuizQuestionNumber.text = "Final Score"
+                    binding.practiceQuizAnswer.text.clear()
+                    binding.buttonNextQuestion.visibility = View.GONE
+
+                }
+            } catch (err: Exception) {
+                if (err is FirebaseAuthError || err is PracticeQuizError) {
+//                        binding.errorMessage.text = err.message
+                    return@launch
+                }
+                throw err
+            }
+        }
     }
 
     private fun startPracticeQuiz() {
@@ -64,7 +98,7 @@ class PracticeAttemptFrag : Fragment() {
 //                println(quiz.getQuestion())
                 binding.practiceQuizQuestion.text = practiceQuiz.getQuestion()
             } catch (err: Exception) {
-                if (err is FirebaseAuthError || err is InstructorQuizError) {
+                if (err is FirebaseAuthError || err is PracticeQuizError) {
 //                    binding.errorMessage.text = err.message
                     return@launch
                 }
