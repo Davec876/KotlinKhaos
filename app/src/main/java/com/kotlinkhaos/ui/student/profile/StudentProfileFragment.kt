@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -41,11 +40,7 @@ class StudentProfileFragment : Fragment() {
         _binding = FragmentStudentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textProfile
-        textView.text = "Hi there,"
-
-        //Initialize barchart, class variable
-        barChart = binding.barChart
+        binding.textProfile.text = resources.getString(R.string.greeting)
 
         //Call function
         loadWeeklySummary()
@@ -87,6 +82,8 @@ class StudentProfileFragment : Fragment() {
     private fun loadWeeklySummary() {
         lifecycleScope.launch {
             try {
+                //Initialize barchart, class variable
+                barChart = binding.barChart
                 val weeklySummaryRes = StudentQuizAttempt.getWeeklySummaryForStudent()
                 val entries = mutableListOf<BarEntry>()
                 val weekDays = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
@@ -154,9 +151,8 @@ class StudentProfileFragment : Fragment() {
     }
 
     private fun showCompliment() {
-        val complimentText = "Wow CSCI 4146 Student, you're on fire 🔥!"
-        //Displays the compliment text
-        binding.textProfile.text = complimentText
+        binding.textProfile.text = resources.getString(R.string.compliment)
+        //binding.textProfile.text = complimentText
     }
 
     override fun onDestroyView() {
