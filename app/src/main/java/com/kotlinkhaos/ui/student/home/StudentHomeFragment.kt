@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
-import com.kotlinkhaos.classes.errors.InstructorQuizError
+import com.kotlinkhaos.classes.errors.StudentQuizError
 import com.kotlinkhaos.classes.quiz.StudentQuizAttempt
 import com.kotlinkhaos.databinding.FragmentStudentHomeBinding
 import kotlinx.coroutines.launch
@@ -60,7 +60,7 @@ class StudentHomeFragment : Fragment() {
                 quizsForCourseListAdapter.updateData(quizs)
                 binding.quizsForCourseList.setHasFixedSize(true) // fixed list performance optimization
             } catch (err: Exception) {
-                if (err is FirebaseAuthError || err is InstructorQuizError) {
+                if (err is FirebaseAuthError || err is StudentQuizError) {
                     binding.errorMessage.text = err.message
                     return@launch
                 }
