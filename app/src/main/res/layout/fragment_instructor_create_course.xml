@@ -25,7 +25,6 @@
         android:layout_height="80dp"
         android:layout_marginTop="64dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/createClassTextView">
 
@@ -62,13 +61,11 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="250dp"
         android:layout_height="80dp"
+        android:layout_marginTop="24dp"
         android:hint="@string/placeholder_education_level"
-        app:layout_constraintBottom_toTopOf="@+id/createCourseButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutInputCourseDesc"
-        app:layout_constraintVertical_bias="0.171">
+        app:layout_constraintTop_toBottomOf="@+id/layoutInputCourseDesc">
 
         <AutoCompleteTextView
             android:id="@+id/itemOptions"
@@ -89,30 +86,25 @@
         app:layout_constraintStart_toStartOf="@+id/createCourseButton"
         app:layout_constraintTop_toTopOf="@+id/createCourseButton" />
 
-    <Button
-        android:id="@+id/createCourseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
-        android:text="@string/done"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutInputCourseDesc"
-        app:layout_constraintVertical_bias="0.0" />
-
     <TextView
         android:id="@+id/errorMessage"
         android:layout_width="280dp"
         android:layout_height="36dp"
-        android:layout_marginTop="344dp"
+        android:layout_marginTop="428dp"
         android:gravity="center"
-        android:textColor="@color/black"
+        android:textColor="@color/red"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.61"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/createCourseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:text="@string/done"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

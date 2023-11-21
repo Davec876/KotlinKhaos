@@ -46,7 +46,6 @@
         <action
             android:id="@+id/start_navigation_go_back_to_student_home"
             app:destination="@+id/navigation_student_home"
-            app:popUpTo="@id/navigation_student_home"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/navigation_student_home" />
     </fragment>
 </navigation>

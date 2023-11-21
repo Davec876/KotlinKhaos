@@ -33,7 +33,7 @@ data class UserDetails(
     val type: UserType = UserType.NONE
 )
 
-private data class UserNameCourseIndex(
+data class InstructorNameCourseIndex(
     val userId: String = "",
     val courseId: String = "",
 )
@@ -78,30 +78,33 @@ class User private constructor(
             }
         }
 
-        private suspend fun createUserCourseIndex(
-            userName: String,
-            userNameCourseIndex: UserNameCourseIndex
+        suspend fun createInstructorNameCourseIndex(
+            instructorName: String,
+            instructorNameCourseIndex: InstructorNameCourseIndex
         ) {
             try {
                 val databaseReference =
-                    FirebaseDatabase.getInstance().getReference("usersNameCourseIndex/$userName")
-                databaseReference.setValue(userNameCourseIndex).await()
+                    FirebaseDatabase.getInstance()
+                        .getReference("instructorsNameCourseIndex/$instructorName")
+                databaseReference.setValue(instructorNameCourseIndex).await()
             } catch (e: Exception) {
-                throw FirebaseAuthError("Failed to create user details: ${e.message}")
+                throw FirebaseAuthError("Failed to create instructor name course index: ${e.message}")
             }
         }
 
-        suspend fun findCourseByUserName(name: String): CourseDetails {
+        suspend fun findCourseByInstructorUserName(instructorName: String): CourseDetails {
+            if (instructorName.isEmpty()) {
+                throw CourseDbError("No instructor name specified!")
+            }
             val databaseReference =
-                FirebaseDatabase.getInstance().getReference("usersNameCourseIndex/$name")
+                FirebaseDatabase.getInstance()
+                    .getReference("instructorsNameCourseIndex/$instructorName")
             val dataSnapshot = databaseReference.get().await()
-            val result = dataSnapshot.getValue<UserNameCourseIndex>()
+            val result = dataSnapshot.getValue<InstructorNameCourseIndex>()
                 ?: throw CourseDbError("Course details not found")
-
             return CourseInstructor.getCourseDetails(result.courseId)
         }
-
-
+        
         suspend fun login(email: String, pass: String): User? {
             try {
                 validateLoginParameters(email, pass)
@@ -136,9 +139,13 @@ class User private constructor(
                 val mAuth = FirebaseAuth.getInstance()
                 val result =
                     mAuth.createUserWithEmailAndPassword(email, pass).await() ?: return null
-                val userCourseIndex = UserNameCourseIndex(result.user!!.uid, courseId = "")
+
+                if (userDetails.type == UserType.INSTRUCTOR) {
+                    val instructorNameCourseIndex =
+                        InstructorNameCourseIndex(result.user!!.uid, courseId = "")
+                    createInstructorNameCourseIndex(userDetails.name, instructorNameCourseIndex)
+                }
                 createUserDetails(result.user!!.uid, userDetails)
-                createUserCourseIndex(userDetails.name, userCourseIndex)
                 return User(
                     result.user!!.uid,
                     userDetails.courseId,

@@ -5,6 +5,7 @@ import com.google.firebase.database.getValue
 import com.kotlinkhaos.classes.errors.CourseCreationError
 import com.kotlinkhaos.classes.errors.CourseDbError
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
+import com.kotlinkhaos.classes.user.InstructorNameCourseIndex
 import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.classes.user.UserDetails
 import com.kotlinkhaos.classes.user.UserType
@@ -12,7 +13,7 @@ import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
 enum class EducationLevelType {
-    UNIVERSITY_LEVEL,
+    UNIVERSITY,
     ELEMENTARY,
     HIGH_SCHOOL,
     NONE
@@ -41,11 +42,9 @@ class CourseInstructor private constructor(
     companion object {
 
         private fun validateCourseParameters(courseDetails: CourseDetails) {
-            // TO Do: validate enum
-            if (courseDetails.name.isEmpty() && courseDetails.description.isEmpty()) {
-                throw FirebaseAuthError(" must not be empty")
+            if (courseDetails.name.isEmpty() || courseDetails.description.isEmpty() || courseDetails.educationLevel == EducationLevelType.NONE) {
+                throw FirebaseAuthError("Course name, description and education level must not be empty")
             }
-
         }
 
         suspend fun createCourseDetails(courseDetails: CourseDetails) {
@@ -65,7 +64,6 @@ class CourseInstructor private constructor(
             return dataSnapshot.getValue<CourseDetails>()
                 ?: throw CourseDbError("Course details not found")
         }
-
 
         suspend fun create(
             instructor: User,
@@ -93,6 +91,9 @@ class CourseInstructor private constructor(
             val userDetails =
                 UserDetails(courseDetails.id, instructor.getName(), instructor.getType())
             User.createUserDetails(instructor.getUserId(), userDetails)
+            val instructorNameCourseIndex =
+                InstructorNameCourseIndex(instructor.getUserId(), courseDetails.id)
+            User.createInstructorNameCourseIndex(instructor.getName(), instructorNameCourseIndex)
 
             return CourseInstructor(
                 courseDetails.id,
@@ -105,12 +106,5 @@ class CourseInstructor private constructor(
             )
 
         }
-
-
     }
-
-    fun getId(): String {
-        return this.id
-    }
-
 }

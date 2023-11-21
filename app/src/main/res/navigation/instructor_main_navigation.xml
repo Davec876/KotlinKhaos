@@ -79,8 +79,7 @@
         <action
             android:id="@+id/start_navigation_go_back_to_instructor_home"
             app:destination="@+id/navigation_instructor_home"
-            app:popUpTo="@id/navigation_instructor_home"
-            app:popUpToInclusive="true" />
+            app:popUpTo="@id/navigation_instructor_home" />
     </fragment>
 
 

@@ -38,15 +38,14 @@ class StudentJoinCourseFragment : Fragment() {
         return root
     }
 
-    fun handleJoinClick() {
+    private fun handleJoinClick() {
         lifecycleScope.launch {
             try {
                 val userName = binding.editTextSearch.text.toString().trim()
-                val courseDetails = User.findCourseByUserName(userName)
+                val courseDetails = User.findCourseByInstructorUserName(userName)
                 val user = User.getUser()
                 if (user != null) {
                     CourseStudent.joinCourse(courseDetails, user)
-                    println(courseDetails)
                     val action =
                         StudentJoinCourseFragmentDirections.startNavigationGoBackToStudentHome()
                     findNavController().navigate(action)
@@ -58,7 +57,6 @@ class StudentJoinCourseFragment : Fragment() {
                 }
                 throw e
             }
-
 
         }
 
