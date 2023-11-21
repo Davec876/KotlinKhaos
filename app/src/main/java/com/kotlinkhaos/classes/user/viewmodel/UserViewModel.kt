@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kotlinkhaos.classes.user.User
+import com.kotlinkhaos.classes.user.UserType
 import kotlinx.coroutines.launch
 
 class UserViewModel(private val userTypeDataStore: UserStore) : ViewModel() {
@@ -36,9 +37,17 @@ class UserViewModel(private val userTypeDataStore: UserStore) : ViewModel() {
         }
     }
 
-    fun logout() {
+    fun saveDetails(courseId: String, userType: UserType) {
         viewModelScope.launch {
-            User.logout()
+            val userDetails = StoredUserDetails(courseId, userType)
+            userTypeDataStore.saveUserDetails(userDetails)
+            _storedUserDetails.value = userDetails;
+            _userDetails.value = userDetails;
+        }
+    }
+
+    fun clear() {
+        viewModelScope.launch {
             userTypeDataStore.clearUserDetails()
             _storedUserDetails.value = null;
             _userDetails.value = null;

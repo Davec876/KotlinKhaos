@@ -17,6 +17,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.classes.user.UserType
 import com.kotlinkhaos.classes.user.viewmodel.UserStore
 import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
@@ -194,7 +195,7 @@ class MainActivity : AppCompatActivity() {
             .setMessage("Are you sure you want to log out?")
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Log Out") { _, _ ->
-                userViewModel.logout()
+                User.logout(userViewModel)
                 val intent = Intent(this, AuthActivity::class.java)
                 startActivity(intent)
                 finish()

@@ -9,6 +9,7 @@ import com.kotlinkhaos.classes.user.InstructorNameCourseIndex
 import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.classes.user.UserDetails
 import com.kotlinkhaos.classes.user.UserType
+import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
@@ -66,6 +67,7 @@ class CourseInstructor private constructor(
         }
 
         suspend fun create(
+            userViewModel: UserViewModel,
             instructor: User,
             name: String,
             educationLevel: EducationLevelType,
@@ -94,7 +96,8 @@ class CourseInstructor private constructor(
             val instructorNameCourseIndex =
                 InstructorNameCourseIndex(instructor.getUserId(), courseDetails.id)
             User.createInstructorNameCourseIndex(instructor.getName(), instructorNameCourseIndex)
-
+            // Updates userDetails in userViewModel cache
+            userViewModel.saveDetails(userDetails.courseId, userDetails.type)
             return CourseInstructor(
                 courseDetails.id,
                 courseDetails.instructorId,

@@ -18,6 +18,7 @@ import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.UserCreateStreamError
 import com.kotlinkhaos.classes.errors.UserNetworkError
 import com.kotlinkhaos.classes.services.KotlinKhaosUserApi
+import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
 import kotlinx.coroutines.tasks.await
 
 enum class UserType {
@@ -104,13 +105,15 @@ class User private constructor(
                 ?: throw CourseDbError("Course details not found")
             return CourseInstructor.getCourseDetails(result.courseId)
         }
-        
-        suspend fun login(email: String, pass: String): User? {
+
+        suspend fun login(userViewModel: UserViewModel, email: String, pass: String): User? {
             try {
                 validateLoginParameters(email, pass)
                 val mAuth = FirebaseAuth.getInstance()
                 val result = mAuth.signInWithEmailAndPassword(email, pass).await() ?: return null
                 val userDetails = fetchUserDetails(result.user!!.uid)
+                // Caches userDetails in userViewModel cache
+                userViewModel.saveDetails(userDetails.courseId, userDetails.type)
                 return User(
                     result.user!!.uid,
                     userDetails.courseId,
@@ -131,7 +134,13 @@ class User private constructor(
             }
         }
 
-        suspend fun register(email: String, pass: String, name: String, type: UserType): User? {
+        suspend fun register(
+            userViewModel: UserViewModel,
+            email: String,
+            pass: String,
+            name: String,
+            type: UserType
+        ): User? {
             try {
                 // When a user is first created, they don't have a courseId
                 val userDetails = UserDetails(courseId = "", name, type)
@@ -146,6 +155,8 @@ class User private constructor(
                     createInstructorNameCourseIndex(userDetails.name, instructorNameCourseIndex)
                 }
                 createUserDetails(result.user!!.uid, userDetails)
+                // Caches userDetails in userViewModel cache
+                userViewModel.saveDetails(userDetails.courseId, userDetails.type)
                 return User(
                     result.user!!.uid,
                     userDetails.courseId,
@@ -237,11 +248,13 @@ class User private constructor(
         /**
          * Logs out the current user from FirebaseAuth.
          *
-         * Warning: This method should only be called from within UserViewModel to ensure that
-         * the UserTypeStore does not get out of sync with the FirebaseAuth state.
+         * This method takes in a userViewModel to ensure that the UserTypeStore
+         * does not get out of sync with the FirebaseAuth state.
          */
-        fun logout() {
+        fun logout(userViewModel: UserViewModel) {
             FirebaseAuth.getInstance().signOut()
+            // Clears userViewModel cache
+            userViewModel.clear()
         }
     }
 

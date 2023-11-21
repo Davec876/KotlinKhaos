@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.kotlinkhaos.classes.course.CourseInstructor
@@ -13,12 +14,18 @@ import com.kotlinkhaos.classes.course.EducationLevelType
 import com.kotlinkhaos.classes.errors.CourseError
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.user.User
+import com.kotlinkhaos.classes.user.viewmodel.UserStore
+import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
+import com.kotlinkhaos.classes.user.viewmodel.UserViewModelFactory
 import com.kotlinkhaos.databinding.FragmentInstructorCreateCourseBinding
 import kotlinx.coroutines.launch
 
 
 class InstructorCreateCourseFragment : Fragment() {
     private var _binding: FragmentInstructorCreateCourseBinding? = null
+    private val userViewModel: UserViewModel by viewModels {
+        UserViewModelFactory(UserStore(requireContext()))
+    }
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -76,6 +83,7 @@ class InstructorCreateCourseFragment : Fragment() {
                 val courseDesc = binding.inputCourseDesc.text.toString().trim()
                 if (user != null) {
                     CourseInstructor.create(
+                        userViewModel,
                         user,
                         courseName,
                         educationLevelSelected,

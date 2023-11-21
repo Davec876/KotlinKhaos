@@ -6,16 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.kotlinkhaos.MainActivity
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.classes.user.UserType
+import com.kotlinkhaos.classes.user.viewmodel.UserStore
+import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
+import com.kotlinkhaos.classes.user.viewmodel.UserViewModelFactory
 import com.kotlinkhaos.databinding.FragmentRegisterBinding
 import kotlinx.coroutines.launch
 
 class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
+    private val userViewModel: UserViewModel by viewModels {
+        UserViewModelFactory(UserStore(requireContext()))
+    }
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -47,7 +54,7 @@ class RegisterFragment : Fragment() {
                 } else {
                     UserType.INSTRUCTOR
                 }
-                val user = User.register(email, password, name, userType)
+                val user = User.register(userViewModel, email, password, name, userType)
                 if (user != null) {
                     val intent = Intent(requireActivity(), MainActivity::class.java)
                     startActivity(intent)
