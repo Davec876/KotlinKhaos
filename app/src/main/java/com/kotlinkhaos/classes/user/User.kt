@@ -11,6 +11,9 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.getValue
+import com.kotlinkhaos.classes.course.CourseDetails
+import com.kotlinkhaos.classes.course.CourseInstructor
+import com.kotlinkhaos.classes.errors.CourseDbError
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.UserCreateStreamError
 import com.kotlinkhaos.classes.errors.UserNetworkError
@@ -24,10 +27,15 @@ enum class UserType {
 }
 
 // No-argument constructor, initialized empty strings
-private data class UserDetails(
+data class UserDetails(
     val courseId: String = "",
     val name: String = "",
     val type: UserType = UserType.NONE
+)
+
+private data class UserNameCourseIndex(
+    val userId: String = "",
+    val courseId: String = "",
 )
 
 class User private constructor(
@@ -58,10 +66,10 @@ class User private constructor(
             val databaseReference = FirebaseDatabase.getInstance().getReference("users/$userId")
             val dataSnapshot = databaseReference.get().await()
             return dataSnapshot.getValue<UserDetails>()
-                ?: throw Exception("User details not found")
+                ?: throw FirebaseAuthError("User details not found")
         }
 
-        private suspend fun createUserDetails(userId: String, userDetails: UserDetails) {
+        suspend fun createUserDetails(userId: String, userDetails: UserDetails) {
             try {
                 val databaseReference = FirebaseDatabase.getInstance().getReference("users/$userId")
                 databaseReference.setValue(userDetails).await()
@@ -69,6 +77,30 @@ class User private constructor(
                 throw FirebaseAuthError("Failed to create user details: ${e.message}")
             }
         }
+
+        private suspend fun createUserCourseIndex(
+            userName: String,
+            userNameCourseIndex: UserNameCourseIndex
+        ) {
+            try {
+                val databaseReference =
+                    FirebaseDatabase.getInstance().getReference("usersNameCourseIndex/$userName")
+                databaseReference.setValue(userNameCourseIndex).await()
+            } catch (e: Exception) {
+                throw FirebaseAuthError("Failed to create user details: ${e.message}")
+            }
+        }
+
+        suspend fun findCourseByUserName(name: String): CourseDetails {
+            val databaseReference =
+                FirebaseDatabase.getInstance().getReference("usersNameCourseIndex/$name")
+            val dataSnapshot = databaseReference.get().await()
+            val result = dataSnapshot.getValue<UserNameCourseIndex>()
+                ?: throw CourseDbError("Course details not found")
+
+            return CourseInstructor.getCourseDetails(result.courseId)
+        }
+
 
         suspend fun login(email: String, pass: String): User? {
             try {
@@ -104,7 +136,9 @@ class User private constructor(
                 val mAuth = FirebaseAuth.getInstance()
                 val result =
                     mAuth.createUserWithEmailAndPassword(email, pass).await() ?: return null
+                val userCourseIndex = UserNameCourseIndex(result.user!!.uid, courseId = "")
                 createUserDetails(result.user!!.uid, userDetails)
+                createUserCourseIndex(userDetails.name, userCourseIndex)
                 return User(
                     result.user!!.uid,
                     userDetails.courseId,

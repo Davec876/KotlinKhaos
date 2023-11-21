@@ -75,7 +75,13 @@
         android:id="@+id/navigation_instructor_create_course"
         android:name="com.kotlinkhaos.ui.instructor.createCourse.InstructorCreateCourseFragment"
         android:label="@string/title_create_course"
-        tools:layout="@layout/fragment_instructor_create_course" />
+        tools:layout="@layout/fragment_instructor_create_course">
+        <action
+            android:id="@+id/start_navigation_go_back_to_instructor_home"
+            app:destination="@+id/navigation_instructor_home"
+            app:popUpTo="@id/navigation_instructor_home"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 
 </navigation>

@@ -65,4 +65,13 @@
     <string name="student_profile_hi_there">Hi There,</string>
     <string name="title_create_course">Create Course</string>
     <string name="title_join_course">Join Course</string>
+    <string name="done">Done!</string>
+    <string name="create_your_class">Create your class!</string>
+    <string name="placeholder_course_name">Course Name</string>
+    <string name="placeholder_course_desc">Course Description</string>
+    <string name="placeholder_education_level">Education Level</string>
+    <string name="find_your_professor">Find you professor!</string>
+    <string name="placeholder_professor_name">Professor Name</string>
+    <string name="join">Join</string>
+    <string name="search">Search</string>
 </resources>

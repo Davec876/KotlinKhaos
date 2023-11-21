@@ -4,9 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.kotlinkhaos.classes.course.CourseStudent
+import com.kotlinkhaos.classes.errors.CourseError
+import com.kotlinkhaos.classes.errors.FirebaseAuthError
+import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.databinding.FragmentStudentJoinCourseBinding
+import kotlinx.coroutines.launch
 
 class StudentJoinCourseFragment : Fragment() {
     private var _binding: FragmentStudentJoinCourseBinding? = null
@@ -23,9 +29,39 @@ class StudentJoinCourseFragment : Fragment() {
         _binding = FragmentStudentJoinCourseBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textCourse
-        textView.text = "This is instructor course Fragment"
+        binding.joinCourseButton.setOnClickListener {
+            handleJoinClick()
+        }
+
+
+        // binding.
         return root
+    }
+
+    fun handleJoinClick() {
+        lifecycleScope.launch {
+            try {
+                val userName = binding.editTextSearch.text.toString().trim()
+                val courseDetails = User.findCourseByUserName(userName)
+                val user = User.getUser()
+                if (user != null) {
+                    CourseStudent.joinCourse(courseDetails, user)
+                    println(courseDetails)
+                    val action =
+                        StudentJoinCourseFragmentDirections.startNavigationGoBackToStudentHome()
+                    findNavController().navigate(action)
+                }
+            } catch (e: Exception) {
+                if (e is FirebaseAuthError || e is CourseError) {
+                    binding.errorMessage.text = e.message
+                    return@launch
+                }
+                throw e
+            }
+
+
+        }
+
     }
 
     override fun onDestroyView() {

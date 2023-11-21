@@ -1,9 +1,12 @@
 package com.kotlinkhaos.classes.course
 
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.getValue
 import com.kotlinkhaos.classes.errors.CourseCreationError
+import com.kotlinkhaos.classes.errors.CourseDbError
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.user.User
+import com.kotlinkhaos.classes.user.UserDetails
 import com.kotlinkhaos.classes.user.UserType
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
@@ -16,14 +19,14 @@ enum class EducationLevelType {
 }
 
 // No-argument constructor, initialized empty strings
-private data class CourseDetails(
+data class CourseDetails(
     val id: String = "",
     val instructorId: String = "",
     val name: String = "",
     val educationLevel: EducationLevelType = EducationLevelType.NONE,
     val description: String = "",
-    val studentIds: Set<String> = emptySet(),
-    val quizIds: Set<String> = emptySet(),
+    val studentIds: MutableList<String> = emptyList<String>().toMutableList(),
+    val quizIds: MutableList<String> = emptyList<String>().toMutableList(),
 )
 
 class CourseInstructor private constructor(
@@ -32,8 +35,8 @@ class CourseInstructor private constructor(
     private val name: String,
     private val educationLevel: EducationLevelType,
     private val description: String,
-    private val studentIds: Set<String>,
-    private val quizIds: Set<String>,
+    private val studentIds: MutableList<String>,
+    private val quizIds: MutableList<String>,
 ) {
     companion object {
 
@@ -45,7 +48,7 @@ class CourseInstructor private constructor(
 
         }
 
-        private suspend fun createCourseDetails(courseDetails: CourseDetails) {
+        suspend fun createCourseDetails(courseDetails: CourseDetails) {
             try {
                 val databaseReference =
                     FirebaseDatabase.getInstance().getReference("courses/${courseDetails.id}")
@@ -55,6 +58,14 @@ class CourseInstructor private constructor(
             }
         }
 
+        suspend fun getCourseDetails(courseId: String): CourseDetails {
+            val databaseReference =
+                FirebaseDatabase.getInstance().getReference("courses/${courseId}")
+            val dataSnapshot = databaseReference.get().await()
+            return dataSnapshot.getValue<CourseDetails>()
+                ?: throw CourseDbError("Course details not found")
+        }
+
 
         suspend fun create(
             instructor: User,
@@ -62,6 +73,7 @@ class CourseInstructor private constructor(
             educationLevel: EducationLevelType,
             description: String
         ): CourseInstructor {
+
             if (instructor.getType() != UserType.INSTRUCTOR) {
                 throw CourseCreationError("You do not have the authorization level to create a class")
             }
@@ -72,11 +84,16 @@ class CourseInstructor private constructor(
                 name,
                 educationLevel,
                 description,
-                studentIds = emptySet(),
-                quizIds = emptySet()
+                studentIds = emptyList<String>().toMutableList(),
+                quizIds = emptyList<String>().toMutableList()
             )
             validateCourseParameters(courseDetails)
             createCourseDetails(courseDetails)
+
+            val userDetails =
+                UserDetails(courseDetails.id, instructor.getName(), instructor.getType())
+            User.createUserDetails(instructor.getUserId(), userDetails)
+
             return CourseInstructor(
                 courseDetails.id,
                 courseDetails.instructorId,
