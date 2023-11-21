@@ -11,6 +11,7 @@ class StudentQuizAttempt private constructor(
     private val id: String,
     private val quizName: String,
     private val questions: List<String>,
+    private val userAnswers: MutableList<String>,
     private var finalScore: Int?,
 ) {
     companion object {
@@ -24,6 +25,7 @@ class StudentQuizAttempt private constructor(
                     res.quizAttemptId,
                     res.quizName,
                     questions,
+                    userAnswers = emptyList<String>().toMutableList(),
                     finalScore = null
                 )
             } catch (err: Exception) {
@@ -59,11 +61,12 @@ class StudentQuizAttempt private constructor(
         }
     }
 
-    suspend fun submitAttempt(answers: List<String>) {
+    suspend fun submitAttempt() {
         try {
             val token = User.getJwt()
             val kotlinKhaosApi = KotlinKhaosQuizStudentApi(token)
-            val res = kotlinKhaosApi.submitStudentQuizAttempt(this.getQuizId(), answers)
+            val res =
+                kotlinKhaosApi.submitStudentQuizAttempt(this.getQuizId(), this.getUserAnswers())
             setFinalScore(res.score)
         } catch (err: Exception) {
             if (err is FirebaseNetworkException) {
@@ -81,12 +84,28 @@ class StudentQuizAttempt private constructor(
         return this.quizName;
     }
 
-    fun getNumberOfQuestions(): Int {
+    fun isFinished(): Boolean {
+        return getNumberOfQuestions() == getUserAnswers().size
+    }
+
+    private fun getNumberOfQuestions(): Int {
         return this.questions.size;
     }
 
-    fun getQuestions(): List<String> {
-        return this.questions;
+    fun addUserAnswer(userAnswer: String) {
+        userAnswers.add(userAnswer)
+    }
+
+    private fun getUserAnswers(): List<String> {
+        return this.userAnswers
+    }
+
+    fun getCurrentQuestionNumber(): Int {
+        return getUserAnswers().size + 1;
+    }
+
+    fun getCurrentQuestion(): String {
+        return this.questions[getUserAnswers().size];
     }
 
     private fun setFinalScore(finalScore: Int) {

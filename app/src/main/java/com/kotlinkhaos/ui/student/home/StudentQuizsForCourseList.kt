@@ -15,7 +15,8 @@ import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.classes.utils.loadImage
 
 class QuizsForCourseListAdapter(
-    private var dataSet: List<StudentQuizsForCourseRes.StudentQuizDetailsRes>
+    private var dataSet: List<StudentQuizsForCourseRes.StudentQuizDetailsRes>,
+    private val clickListener: (String) -> Unit
 ) :
     RecyclerView.Adapter<QuizsForCourseListAdapter.ViewHolder>() {
 
@@ -49,23 +50,34 @@ class QuizsForCourseListAdapter(
         val context = viewHolder.itemView.context // Get context from the itemView
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
+
         val quiz = dataSet[position]
         viewHolder.quizName.text = quiz.name
         viewHolder.avatarIcon.loadImage(User.getProfilePicture(quiz.authorId))
-
         if (quiz.usersAttempt != null) {
-            viewHolder.quizButton.text = "${quiz.usersAttempt.score}/10"
-            viewHolder.quizButton.isEnabled = false
-            // Change text color to grey
-            viewHolder.quizButton.setTextColor(ContextCompat.getColor(context, R.color.gray))
-
-            // Change stroke color to grey
-            (viewHolder.quizButton as? MaterialButton)?.strokeColor =
-                ContextCompat.getColorStateList(context, R.color.gray)
+            disableButton(viewHolder, quiz.usersAttempt.score)
+        } else if (quiz.finished) {
+            // If quiz is finished, but the user never attempted it
+            disableButton(viewHolder, 0)
         } else {
             viewHolder.quizButton.text =
                 context.getString(R.string.quiz_course_card_start_quiz_button)
+            viewHolder.quizButton.setOnClickListener {
+                clickListener(quiz.id)
+            }
         }
+    }
+
+    private fun disableButton(viewHolder: ViewHolder, score: Int) {
+        val context = viewHolder.itemView.context // Get context from the itemView
+        viewHolder.quizButton.text = "${score}/10"
+        viewHolder.quizButton.isEnabled = false
+        // Change text color to grey
+        viewHolder.quizButton.setTextColor(ContextCompat.getColor(context, R.color.gray))
+
+        // Change stroke color to grey
+        (viewHolder.quizButton as? MaterialButton)?.strokeColor =
+            ContextCompat.getColorStateList(context, R.color.gray)
     }
 
     // Return the size of your dataset (invoked by the layout manager)

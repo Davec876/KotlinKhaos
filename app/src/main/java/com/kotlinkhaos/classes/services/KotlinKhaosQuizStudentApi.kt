@@ -173,7 +173,7 @@ data class StudentWeeklySummaryRes(
 
     @Serializable
     data class DaySummary(
-        val averageScore: Int,
+        val averageScore: Float,
         val quizs: List<QuizAttemptIdAndScore>
     )
 

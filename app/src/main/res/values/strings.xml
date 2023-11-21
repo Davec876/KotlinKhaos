@@ -57,10 +57,10 @@
     <string name="next_button">Next</string>
     <string name="please_type_your_answer_here">Please type your answer here</string>
     <string name="question_loading">Loading...</string>
-    <string name="practice_quiz_question_number">Question %1$d</string>
+    <string name="quiz_question_number">Question %1$d</string>
     <string name="practice_quiz_feedback_for_question">Feedback for Question %1$d</string>
-    <string name="practice_quiz_question_number_final_score">%1$d/10</string>
-    <string name="practice_quiz_final_score">Final Score 🎉</string>
+    <string name="quiz_question_number_final_score">%1$d/10</string>
+    <string name="quiz_final_score">Final Score 🎉</string>
     <string name="student_profile_hi_there">Hi There,</string>
     <string name="title_create_course">Create Course</string>
     <string name="title_join_course">Join Course</string>
@@ -73,4 +73,6 @@
     <string name="placeholder_professor_name">Professor Name</string>
     <string name="join">Join</string>
     <string name="search">Search</string>
+    <string name="title_quiz_attempt">Quiz Attempt</string>
+    <string name="go_back_home_button">Return to Home</string>
 </resources>

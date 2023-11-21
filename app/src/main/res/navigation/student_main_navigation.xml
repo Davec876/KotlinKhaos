@@ -9,7 +9,11 @@
         android:id="@+id/navigation_student_home"
         android:name="com.kotlinkhaos.ui.student.home.StudentHomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_student_home" />
+        tools:layout="@layout/fragment_student_home">
+        <action
+            android:id="@+id/start_navigation_student_quiz_attempt"
+            app:destination="@+id/navigation_student_quiz_attempt" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_student_practice"
@@ -26,6 +30,22 @@
         android:name="com.kotlinkhaos.ui.student.profile.StudentProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_student_profile" />
+
+    <fragment
+        android:id="@+id/navigation_student_quiz_attempt"
+        android:name="com.kotlinkhaos.ui.student.home.quiz.StudentQuizAttemptFragment"
+        android:label="@string/title_quiz_attempt"
+        tools:layout="@layout/fragment_student_quiz_attempt">
+        <argument
+            android:name="quizId"
+            app:argType="string" />
+
+        <action
+            android:id="@+id/start_navigation_go_back_to_student_home"
+            app:destination="@+id/navigation_student_home"
+            app:popUpTo="@id/navigation_student_home"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_student_practice_attempt"

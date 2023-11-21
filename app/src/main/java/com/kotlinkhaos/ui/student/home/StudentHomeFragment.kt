@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.StudentQuizError
@@ -34,7 +35,10 @@ class StudentHomeFragment : Fragment() {
         binding.refreshQuizForCourseList.setOnRefreshListener {
             loadQuizListForCourse()
         }
-        quizsForCourseListAdapter = QuizsForCourseListAdapter(emptyList())
+        quizsForCourseListAdapter = QuizsForCourseListAdapter(emptyList()) { quizId ->
+            val action = StudentHomeFragmentDirections.startNavigationStudentQuizAttempt(quizId)
+            findNavController().navigate(action)
+        }
         binding.quizsForCourseList.adapter = quizsForCourseListAdapter
         binding.quizsForCourseList.layoutManager = LinearLayoutManager(requireContext())
         binding.quizsForCourseList.addItemDecoration(

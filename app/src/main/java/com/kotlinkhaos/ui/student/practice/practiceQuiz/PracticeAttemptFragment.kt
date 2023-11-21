@@ -81,7 +81,7 @@ class PracticeAttemptFragment : Fragment() {
                     binding.practiceQuizQuestion.text = practiceQuiz.getQuestion()
                     binding.practiceQuizQuestionNumber.text =
                         getString(
-                            R.string.practice_quiz_question_number,
+                            R.string.quiz_question_number,
                             practiceQuiz.getCurrentQuestionNumber()
                         )
                     binding.practiceQuizAnswer.text?.clear()
@@ -90,13 +90,13 @@ class PracticeAttemptFragment : Fragment() {
                     binding.buttonGetFeedback.visibility = View.VISIBLE
                     binding.layoutPracticeQuizAnswer.visibility = View.VISIBLE
                 } else {
-                    // Handle the end of quiz scenario
+                    // Handle the end of practice quiz scenario
                     binding.practiceQuizQuestion.text = getString(
-                        R.string.practice_quiz_question_number_final_score,
+                        R.string.quiz_question_number_final_score,
                         practiceQuiz.getFinalScore()
                     )
                     binding.practiceQuizQuestionNumber.text =
-                        getString(R.string.practice_quiz_final_score)
+                        getString(R.string.quiz_final_score)
                     binding.buttonNextQuestion.visibility = View.GONE
                 }
             } catch (err: Exception) {
