@@ -93,7 +93,9 @@ class StudentQuizAttempt private constructor(
     }
 
     fun addUserAnswer(userAnswer: String) {
-        userAnswers.add(userAnswer)
+        if (!isFinished()) {
+            userAnswers.add(userAnswer)
+        }
     }
 
     private fun getUserAnswers(): List<String> {
