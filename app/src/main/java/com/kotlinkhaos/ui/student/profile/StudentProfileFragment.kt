@@ -42,7 +42,7 @@ class StudentProfileFragment : Fragment() {
         _binding = FragmentStudentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.textProfile.text = resources.getString(R.string.greeting)
+        binding.textStudentProfile.text = resources.getString(R.string.greeting)
 
         // Setup profile picture image picker
         val (imagePicker, requestPermissionLauncher) = setupImagePickerCallbacks { selectedImageUri ->
@@ -172,7 +172,7 @@ class StudentProfileFragment : Fragment() {
     }
 
     private fun showCompliment() {
-        binding.textProfile.text = resources.getString(R.string.compliment)
+        binding.textStudentProfile.text = resources.getString(R.string.compliment)
     }
 
     private fun loadProfilePicture() {

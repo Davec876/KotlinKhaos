@@ -5,9 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.kotlinkhaos.classes.course.CourseInstructor
+import com.kotlinkhaos.classes.errors.CourseError
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.UserError
 import com.kotlinkhaos.classes.user.User
@@ -40,16 +41,36 @@ class InstructorCourseFragment : Fragment() {
         binding.profilePictureLayout.changeProfilePicture.setOnClickListener {
             openPictureGallery(imagePicker, requestPermissionLauncher)
         }
+        loadCourseDetails()
         loadProfilePicture()
-
-        val textView: TextView = binding.textCourse
-        textView.text = "This is instructor course Fragment"
         return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun loadCourseDetails() {
+        setLoadingState(true)
+        lifecycleScope.launch {
+            try {
+                val user = User.getUser()
+                if (user != null) {
+                    val courseDetails = CourseInstructor.getCourseDetails(user.getCourseId())
+                    binding.courseDesc.setText(courseDetails.description)
+                    binding.educationLevelOptions.setText(courseDetails.educationLevel.name)
+                }
+            } catch (err: Exception) {
+                if (err is FirebaseAuthError || err is CourseError) {
+                    binding.errorMessage.text = err.message
+                    return@launch
+                }
+                throw err
+            } finally {
+                setLoadingState(false)
+            }
+        }
     }
 
     private fun loadProfilePicture() {
@@ -80,6 +101,14 @@ class InstructorCourseFragment : Fragment() {
                 }
                 throw err
             }
+        }
+    }
+
+    private fun setLoadingState(loading: Boolean) {
+        with(binding) {
+            loadingCourseDetails.visibility = if (loading) View.VISIBLE else View.GONE
+            layoutCourseDesc.visibility = if (loading) View.GONE else View.VISIBLE
+            educationLevelMenu.visibility = if (loading) View.GONE else View.VISIBLE
         }
     }
 }

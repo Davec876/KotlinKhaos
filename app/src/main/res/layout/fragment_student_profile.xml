@@ -33,7 +33,7 @@
         app:layout_constraintVertical_bias="0.968" />
 
     <TextView
-        android:id="@+id/text_profile"
+        android:id="@+id/text_student_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -41,7 +41,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/student_profile_hi_there"
         android:textAlignment="center"
-        android:textColor="#000000"
+        android:textColor="@color/black"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +56,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_profile"
+        app:layout_constraintTop_toBottomOf="@+id/text_student_profile"
         app:layout_constraintVertical_bias="0.2" />
 
     <ProgressBar

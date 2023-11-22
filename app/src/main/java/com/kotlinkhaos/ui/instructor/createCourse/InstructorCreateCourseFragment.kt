@@ -50,9 +50,9 @@ class InstructorCreateCourseFragment : Fragment() {
             android.R.layout.simple_dropdown_item_1line,
             items.map { it.name }
         )
-        binding.itemOptions.setAdapter(educationLevelListAdapter)
+        binding.educationLevelOptions.setAdapter(educationLevelListAdapter)
         var educationLevel: EducationLevelType = EducationLevelType.NONE
-        binding.itemOptions.setOnItemClickListener { parent, _, position, _ ->
+        binding.educationLevelOptions.setOnItemClickListener { parent, _, position, _ ->
             // Get the selected item as a String
             val selectedName = parent.getItemAtPosition(position) as String
             // Find the corresponding enum value
