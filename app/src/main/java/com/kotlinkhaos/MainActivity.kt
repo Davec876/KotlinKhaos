@@ -196,9 +196,6 @@ class MainActivity : AppCompatActivity() {
             .setNegativeButton("Cancel", null)
             .setPositiveButton("Log Out") { _, _ ->
                 User.logout(userViewModel)
-                val intent = Intent(this, AuthActivity::class.java)
-                startActivity(intent)
-                finish()
             }
             .show()
 
