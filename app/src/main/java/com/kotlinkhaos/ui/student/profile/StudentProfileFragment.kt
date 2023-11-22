@@ -1,5 +1,6 @@
 package com.kotlinkhaos.ui.student.profile
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,8 +17,13 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.kotlinkhaos.R
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.StudentQuizError
+import com.kotlinkhaos.classes.errors.UserError
 import com.kotlinkhaos.classes.quiz.StudentQuizAttempt
 import com.kotlinkhaos.classes.services.StudentWeeklySummaryRes
+import com.kotlinkhaos.classes.user.User
+import com.kotlinkhaos.classes.utils.loadImage
+import com.kotlinkhaos.classes.utils.openPictureGallery
+import com.kotlinkhaos.classes.utils.setupImagePickerCallbacks
 import com.kotlinkhaos.databinding.FragmentStudentProfileBinding
 import kotlinx.coroutines.launch
 
@@ -37,6 +43,17 @@ class StudentProfileFragment : Fragment() {
         val root: View = binding.root
 
         binding.textProfile.text = resources.getString(R.string.greeting)
+
+        // Setup profile picture image picker
+        val (imagePicker, requestPermissionLauncher) = setupImagePickerCallbacks { selectedImageUri ->
+            if (selectedImageUri != null) {
+                uploadImage(selectedImageUri)
+            }
+        }
+        binding.profilePictureLayout.changeProfilePicture.setOnClickListener {
+            openPictureGallery(imagePicker, requestPermissionLauncher)
+        }
+        loadProfilePicture()
 
         //Call function
         loadWeeklySummary()
@@ -87,7 +104,7 @@ class StudentProfileFragment : Fragment() {
                 //Calculates their progress
                 val hasProgress = calculateProgress(weeklySummaryRes)
 
-                for ((index, day) in weekDays.withIndex()) {
+                for ((index, _) in weekDays.withIndex()) {
                     val daySummary = when (index) {
                         0 -> weeklySummaryRes.sun
                         1 -> weeklySummaryRes.mon
@@ -99,7 +116,7 @@ class StudentProfileFragment : Fragment() {
                         else -> null
                     }
 
-                    val averageScore = daySummary?.averageScore?.toFloat() ?: 0f
+                    val averageScore = daySummary?.averageScore ?: 0f
                     entries.add(
                         BarEntry(
                             index.toFloat(),
@@ -156,6 +173,37 @@ class StudentProfileFragment : Fragment() {
 
     private fun showCompliment() {
         binding.textProfile.text = resources.getString(R.string.compliment)
+    }
+
+    private fun loadProfilePicture() {
+        try {
+            val imageUrl = User.getProfilePicture()
+            binding.profilePictureLayout.profilePicture.loadImage(
+                imageUrl,
+                binding.profilePictureLayout.profilePictureLoading
+            )
+        } catch (err: Exception) {
+            if (err is FirebaseAuthError) {
+                binding.errorMessage.text = err.message
+                return
+            }
+            throw err
+        }
+    }
+
+    private fun uploadImage(selectedImageUri: Uri) {
+        lifecycleScope.launch {
+            try {
+                User.uploadProfilePicture(requireContext(), selectedImageUri)
+                loadProfilePicture()
+            } catch (err: Exception) {
+                if (err is FirebaseAuthError || err is UserError) {
+                    binding.errorMessage.text = err.message
+                    return@launch
+                }
+                throw err
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -98,7 +98,4 @@ class KotlinKhaosUserApi {
 }
 
 @Serializable
-data class UserProfilePictureUrlRes(val downloadUrl: String)
-
-@Serializable
 data class UserProfilePictureUploadUrlRes(val uploadUrl: String)
