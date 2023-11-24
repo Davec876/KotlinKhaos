@@ -49,7 +49,14 @@ class QuizsForCourseListAdapter(
         // contents of the view with that element
         val quiz = dataSet[position]
         viewHolder.quizName.text = quiz.name
-        viewHolder.avatarIcon.loadImage(User.getProfilePicture(quiz.authorId))
+        if (quiz.authorAvatarHash !== null) {
+            viewHolder.avatarIcon.loadImage(
+                User.getProfilePicture(
+                    quiz.authorId,
+                    quiz.authorAvatarHash
+                )
+            )
+        }
         viewHolder.viewButton.setOnClickListener {
             clickListener(quiz.id)
         }

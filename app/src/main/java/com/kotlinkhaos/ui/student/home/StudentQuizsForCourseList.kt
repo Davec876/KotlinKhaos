@@ -53,7 +53,14 @@ class QuizsForCourseListAdapter(
 
         val quiz = dataSet[position]
         viewHolder.quizName.text = quiz.name
-        viewHolder.avatarIcon.loadImage(User.getProfilePicture(quiz.authorId))
+        if (quiz.authorAvatarHash !== null) {
+            viewHolder.avatarIcon.loadImage(
+                User.getProfilePicture(
+                    quiz.authorId,
+                    quiz.authorAvatarHash
+                )
+            )
+        }
         if (quiz.usersAttempt != null) {
             disableButton(viewHolder, quiz.usersAttempt.score)
         } else if (quiz.finished) {

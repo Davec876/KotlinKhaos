@@ -13,6 +13,7 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.parameter
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
@@ -40,9 +41,32 @@ class KotlinKhaosUserApi {
         }
     }
 
-    suspend fun getPresignedProfilePictureUploadUrl(token: String): UserProfilePictureUploadUrlRes {
+    suspend fun getProfilePictureHash(
+        token: String,
+    ): UserProfilePictureHashRes {
+        try {
+            val res = client.get("$apiHost/user/profile-picture") {
+                addRequiredApiHeaders(token)
+            }
+            return parseResponseFromApi(res)
+        } catch (err: Exception) {
+            Log.e("KotlinKhaosApi", "Error in getProfilePictureHash", err)
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
+                throw UserNetworkError()
+            }
+            throw err
+        } finally {
+            client.close()
+        }
+    }
+
+    suspend fun getPresignedProfilePictureUploadUrl(
+        token: String,
+        sha256Hash: String
+    ): UserProfilePictureUploadUrlRes {
         try {
             val res = client.get("$apiHost/user/profile-picture/upload") {
+                parameter("sha256", sha256Hash)
                 addRequiredApiHeaders(token)
             }
             return parseResponseFromApi(res)
@@ -96,6 +120,9 @@ class KotlinKhaosUserApi {
         throw UserApiError(apiError.status, apiError.error)
     }
 }
+
+@Serializable
+data class UserProfilePictureHashRes(val sha256: String? = null)
 
 @Serializable
 data class UserProfilePictureUploadUrlRes(val uploadUrl: String)

@@ -196,6 +196,7 @@ data class InstructorQuizsForCourseRes(
     data class InstructorQuizDetailsRes(
         val id: String,
         val authorId: String,
+        val authorAvatarHash: String? = null,
         val name: String,
         val started: Boolean,
         val finished: Boolean,
@@ -216,6 +217,7 @@ data class InstructorQuizsForCourseRes(
             val score: Int,
             val submittedOn: Instant,
             val name: String,
+            val studentAvatarHash: String? = null
         )
     }
 }

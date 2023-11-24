@@ -18,8 +18,7 @@ fun ImageView.loadImage(url: String) {
         .load(url)
         .apply(
             RequestOptions()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .placeholder(R.drawable.account_circle_gray_24dp)
                 .error(R.drawable.account_circle_gray_24dp)
         )
@@ -33,8 +32,7 @@ fun ImageView.loadImage(url: String, progressBar: ProgressBar) {
         .load(url)
         .apply(
             RequestOptions()
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                 .placeholder(R.drawable.account_circle_gray_24dp)
                 .error(R.drawable.account_circle_gray_24dp)
         )

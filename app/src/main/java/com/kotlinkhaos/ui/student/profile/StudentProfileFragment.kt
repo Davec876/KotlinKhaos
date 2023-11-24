@@ -176,18 +176,20 @@ class StudentProfileFragment : Fragment() {
     }
 
     private fun loadProfilePicture() {
-        try {
-            val imageUrl = User.getProfilePicture()
-            binding.profilePictureLayout.profilePicture.loadImage(
-                imageUrl,
-                binding.profilePictureLayout.profilePictureLoading
-            )
-        } catch (err: Exception) {
-            if (err is FirebaseAuthError) {
-                binding.errorMessage.text = err.message
-                return
+        lifecycleScope.launch {
+            try {
+                val imageUrl = User.getProfilePicture()
+                binding.profilePictureLayout.profilePicture.loadImage(
+                    imageUrl,
+                    binding.profilePictureLayout.profilePictureLoading
+                )
+            } catch (err: Exception) {
+                if (err is FirebaseAuthError || err is UserError) {
+                    binding.errorMessage.text = err.message
+                    return@launch
+                }
+                throw err
             }
-            throw err
         }
     }
 

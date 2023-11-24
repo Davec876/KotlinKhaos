@@ -51,7 +51,14 @@ class UserAttemptListAdapter(
         // contents of the view with that element
         val attempt = dataSet[position]
         viewHolder.userName.text = attempt.name
-        viewHolder.avatarIcon.loadImage(User.getProfilePicture(attempt.studentId))
+        if (attempt.studentAvatarHash != null) {
+            viewHolder.avatarIcon.loadImage(
+                User.getProfilePicture(
+                    attempt.studentId,
+                    attempt.studentAvatarHash
+                )
+            )
+        }
         viewHolder.score.text = "${attempt.score}/10"
         viewHolder.viewAttemptButton.setOnClickListener {
             clickListener(attempt.studentId)

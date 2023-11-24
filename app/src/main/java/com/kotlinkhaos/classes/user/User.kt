@@ -19,6 +19,7 @@ import com.kotlinkhaos.classes.errors.UserCreateStreamError
 import com.kotlinkhaos.classes.errors.UserNetworkError
 import com.kotlinkhaos.classes.services.KotlinKhaosUserApi
 import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
+import com.kotlinkhaos.classes.utils.calculateSha256Hash
 import kotlinx.coroutines.tasks.await
 
 enum class UserType {
@@ -202,29 +203,37 @@ class User private constructor(
             }
         }
 
-        fun getProfilePicture(userId: String): String {
-            return "https://images.maximoguk.com/kotlin-khaos/profile/picture/${userId}"
+        fun getProfilePicture(userId: String, hash: String): String {
+            return "https://images.maximoguk.com/kotlin-khaos/profile/picture/${userId}/${hash}"
         }
 
         /**
          * Get profile picture for currently logged in user
          */
-        fun getProfilePicture(): String {
-            val mAuth = FirebaseAuth.getInstance()
-            val loadedFirebaseUser =
-                mAuth.currentUser ?: throw FirebaseAuthError("User is not logged in!")
-            val userId = loadedFirebaseUser.uid
-            return "https://images.maximoguk.com/kotlin-khaos/profile/picture/${userId}"
+        suspend fun getProfilePicture(): String {
+            val userId = getUserId()
+            val token = getJwt()
+            val kotlinKhaosApi = KotlinKhaosUserApi()
+            val avatarHash =
+                kotlinKhaosApi.getProfilePictureHash(token).sha256
+            return "https://images.maximoguk.com/kotlin-khaos/profile/picture/${userId}/${avatarHash}"
         }
 
         suspend fun uploadProfilePicture(context: Context, imageUri: Uri) {
             try {
                 val token = getJwt()
+                // Calculate SHA-256 hash
+                val sha256Hash =
+                    context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
+                        calculateSha256Hash(inputStream)
+                    } ?: throw UserCreateStreamError()
+
                 val kotlinKhaosApi = KotlinKhaosUserApi()
                 val uploadUrl =
-                    kotlinKhaosApi.getPresignedProfilePictureUploadUrl(token).uploadUrl
+                    kotlinKhaosApi.getPresignedProfilePictureUploadUrl(token, sha256Hash).uploadUrl
                 val s3Api = KotlinKhaosUserApi()
 
+                // Upload the image
                 context.contentResolver.openInputStream(imageUri)?.use { inputStream ->
                     s3Api.uploadImageToS3(inputStream, uploadUrl)
                 } ?: throw UserCreateStreamError()
@@ -234,6 +243,13 @@ class User private constructor(
                 }
                 throw err
             }
+        }
+
+        private fun getUserId(): String {
+            val mAuth = FirebaseAuth.getInstance()
+            val loadedFirebaseUser =
+                mAuth.currentUser ?: throw FirebaseAuthError("User is not logged in!")
+            return loadedFirebaseUser.uid
         }
 
         suspend fun getJwt(): String {

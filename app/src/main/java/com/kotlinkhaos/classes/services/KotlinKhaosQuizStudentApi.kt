@@ -141,6 +141,7 @@ data class StudentQuizsForCourseRes(
     data class StudentQuizDetailsRes(
         val id: String,
         val authorId: String,
+        val authorAvatarHash: String? = null,
         val name: String,
         val started: Boolean,
         val finished: Boolean,
