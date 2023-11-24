@@ -3,6 +3,7 @@ package com.kotlinkhaos.classes.quiz
 import com.google.firebase.FirebaseNetworkException
 import com.kotlinkhaos.classes.errors.StudentQuizNetworkError
 import com.kotlinkhaos.classes.services.KotlinKhaosQuizStudentApi
+import com.kotlinkhaos.classes.services.StudentQuizAttemptRes
 import com.kotlinkhaos.classes.services.StudentQuizsForCourseRes
 import com.kotlinkhaos.classes.services.StudentWeeklySummaryRes
 import com.kotlinkhaos.classes.user.User
@@ -28,6 +29,19 @@ class StudentQuizAttempt private constructor(
                     userAnswers = emptyList<String>().toMutableList(),
                     finalScore = null
                 )
+            } catch (err: Exception) {
+                if (err is FirebaseNetworkException) {
+                    throw StudentQuizNetworkError()
+                }
+                throw err
+            }
+        }
+
+        suspend fun getStudentQuizAttempt(quizAttemptId: String): StudentQuizAttemptRes.QuizAttempt {
+            try {
+                val token = User.getJwt()
+                val kotlinKhaosApi = KotlinKhaosQuizStudentApi(token)
+                return kotlinKhaosApi.getStudentQuizAttempt(quizAttemptId).quizAttempt
             } catch (err: Exception) {
                 if (err is FirebaseNetworkException) {
                     throw StudentQuizNetworkError()

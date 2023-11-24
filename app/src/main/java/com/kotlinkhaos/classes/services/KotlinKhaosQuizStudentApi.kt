@@ -51,6 +51,25 @@ class KotlinKhaosQuizStudentApi(private val token: String) {
         }
     }
 
+    suspend fun getStudentQuizAttempt(
+        quizAttemptId: String,
+    ): StudentQuizAttemptRes {
+        try {
+            val res = client.get("$apiHost/student/quiz-attempts/$quizAttemptId") {
+                addRequiredApiHeaders()
+            }
+            return parseResponseFromApi(res)
+        } catch (err: Exception) {
+            Log.e("KotlinKhaosApi", "Error in getStudentQuizAttempt", err)
+            if (err is UnresolvedAddressException || err is HttpRequestTimeoutException) {
+                throw StudentQuizNetworkError()
+            }
+            throw err
+        } finally {
+            client.close()
+        }
+    }
+
     suspend fun submitStudentQuizAttempt(
         quizAttemptId: String,
         answers: List<String>
@@ -126,6 +145,16 @@ data class StudentQuizAttemptCreateRes(
     val quizAttemptId: String,
     val questions: List<String>
 )
+
+@Serializable
+data class StudentQuizAttemptRes(val quizAttempt: QuizAttempt) {
+    @Serializable
+    data class QuizAttempt(
+        val answers: List<String>,
+        val questions: List<String>,
+        val submitted: Boolean
+    )
+}
 
 @Serializable
 data class StudentQuizAttemptSubmitReq(val answers: List<String>)

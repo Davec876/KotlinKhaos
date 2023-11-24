@@ -76,4 +76,6 @@
     <string name="title_quiz_attempt">Quiz Attempt</string>
     <string name="go_back_home_button">Return to Home</string>
     <string name="instructor_profile_your_course">Your Course,</string>
+    <string name="user_attempt_action_bar_title">%1$s\'s Attempt</string>
+    <string name="back_button">Back</string>
 </resources>

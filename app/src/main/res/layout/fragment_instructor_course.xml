@@ -69,7 +69,8 @@
         android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layoutCourseDesc">
+        app:layout_constraintTop_toBottomOf="@+id/layoutCourseDesc"
+        app:startIconDrawable="@drawable/course_black_24dp">
 
         <AutoCompleteTextView
             android:id="@+id/educationLevelOptions"

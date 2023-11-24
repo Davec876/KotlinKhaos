@@ -47,11 +47,8 @@ class InstructorQuizDetailsFragment : Fragment() {
 
             val quiz = quizsForCourseViewModel.quizs.value?.find { quiz ->
                 quiz.id == args.quizId
-            }
+            } ?: throw InstructorQuizDetailsError("Specified quiz not found")
 
-            if (quiz == null) {
-                throw InstructorQuizDetailsError("Specified quiz not found")
-            }
             binding.quizName.text = quiz.name
             val userAttempts = quiz.finishedUserAttempts.values.toList()
 
