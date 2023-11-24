@@ -83,8 +83,10 @@ class InstructorHomeFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        binding.refreshQuizForCourseList.post {
-            binding.refreshQuizForCourseList.isRefreshing = loading
+        if (isAdded) {
+            binding.refreshQuizForCourseList.post {
+                binding.refreshQuizForCourseList.isRefreshing = loading
+            }
         }
     }
 

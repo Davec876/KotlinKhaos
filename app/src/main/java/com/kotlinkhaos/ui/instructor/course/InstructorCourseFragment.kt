@@ -83,10 +83,12 @@ class InstructorCourseFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        with(binding) {
-            loadingCourseDetails.visibility = if (loading) View.VISIBLE else View.GONE
-            layoutCourseDesc.visibility = if (loading) View.GONE else View.VISIBLE
-            educationLevelMenu.visibility = if (loading) View.GONE else View.VISIBLE
+        if (isAdded) {
+            with(binding) {
+                loadingCourseDetails.visibility = if (loading) View.VISIBLE else View.GONE
+                layoutCourseDesc.visibility = if (loading) View.GONE else View.VISIBLE
+                educationLevelMenu.visibility = if (loading) View.GONE else View.VISIBLE
+            }
         }
     }
 }

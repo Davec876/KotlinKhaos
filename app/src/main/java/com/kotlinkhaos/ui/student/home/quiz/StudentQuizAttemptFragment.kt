@@ -126,10 +126,12 @@ class StudentQuizAttemptFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        if (loading) {
-            binding.errorMessage.text = ""
+        if (isAdded) {
+            if (loading) {
+                binding.errorMessage.text = ""
+            }
+            binding.quizQuestionLoading.visibility = if (loading) View.VISIBLE else View.GONE
         }
-        binding.quizQuestionLoading.visibility = if (loading) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

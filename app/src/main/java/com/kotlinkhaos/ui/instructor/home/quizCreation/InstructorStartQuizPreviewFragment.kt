@@ -111,8 +111,10 @@ class InstructorStartQuizPreviewFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        binding.loadingQuizPreviewProgress.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.startQuizButton.isEnabled = !loading
+        if (isAdded) {
+            binding.loadingQuizPreviewProgress.visibility = if (loading) View.VISIBLE else View.GONE
+            binding.startQuizButton.isEnabled = !loading
+        }
     }
 
     private fun navigateBackToHome() {

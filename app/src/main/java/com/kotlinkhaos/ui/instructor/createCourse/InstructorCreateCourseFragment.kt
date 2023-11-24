@@ -107,8 +107,10 @@ class InstructorCreateCourseFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        binding.courseCreationProgess.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.createCourseButton.isEnabled = !loading
+        if (isAdded) {
+            binding.courseCreationProgess.visibility = if (loading) View.VISIBLE else View.GONE
+            binding.createCourseButton.isEnabled = !loading
+        }
     }
 
 }

@@ -7,7 +7,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
-import com.kotlinkhaos.classes.errors.InstructorQuizError
 import com.kotlinkhaos.classes.errors.UserError
 import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.classes.user.viewmodel.UserAvatarViewModel
@@ -48,7 +47,9 @@ fun uploadProfilePicture(
             throw err
         } finally {
             // Finish loading
-            profilePictureLayoutBinding.profilePictureLoading.visibility = View.GONE
+            if (profilePictureLayoutBinding.root.isAttachedToWindow) {
+                profilePictureLayoutBinding.profilePictureLoading.visibility = View.GONE
+            }
         }
     }
 }
@@ -69,25 +70,14 @@ fun loadProfilePicture(
 
     userAvatarViewModel.loadAvatarHash()
     userAvatarViewModel.avatarUrl.observe(lifecycleOwner) { avatarUrl ->
-        try {
-            profilePictureLayoutBinding.profilePicture.loadImage(
-                avatarUrl,
-                profilePictureLayoutBinding.profilePictureLoading
-            )
-        } catch (err: Exception) {
-            if (err is FirebaseAuthError || err is UserError) {
-                when (binding) {
-                    is FragmentStudentProfileBinding -> binding.errorMessage.text = err.message
-                    is FragmentInstructorCourseBinding -> binding.errorMessage.text = err.message
-                }
-                return@observe
-            }
-            throw err
-        }
+        profilePictureLayoutBinding.profilePicture.loadImage(
+            avatarUrl,
+            profilePictureLayoutBinding.profilePictureLoading
+        )
     }
 
     userAvatarViewModel.userAvatarError.observe(lifecycleOwner) { err ->
-        if (err is FirebaseAuthError || err is InstructorQuizError) {
+        if (err is FirebaseAuthError || err is UserError) {
             when (binding) {
                 is FragmentStudentProfileBinding -> binding.errorMessage.text = err.message
                 is FragmentInstructorCourseBinding -> binding.errorMessage.text = err.message

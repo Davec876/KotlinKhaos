@@ -74,8 +74,10 @@ class StudentJoinCourseFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        binding.joinCourseProgess.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.joinCourseButton.isEnabled = !loading
+        if (isAdded) {
+            binding.joinCourseProgess.visibility = if (loading) View.VISIBLE else View.GONE
+            binding.joinCourseButton.isEnabled = !loading
+        }
     }
 
     override fun onDestroyView() {

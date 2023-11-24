@@ -131,10 +131,13 @@ class PracticeAttemptFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        if (loading) {
-            binding.errorMessage.text = ""
+        if (isAdded) {
+            if (loading) {
+                binding.errorMessage.text = ""
+            }
+            binding.practiceQuizQuestionLoading.visibility =
+                if (loading) View.VISIBLE else View.GONE
         }
-        binding.practiceQuizQuestionLoading.visibility = if (loading) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

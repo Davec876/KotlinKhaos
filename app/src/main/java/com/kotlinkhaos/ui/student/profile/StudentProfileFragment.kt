@@ -175,8 +175,10 @@ class StudentProfileFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        binding.loadingBarChart.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.barChart.visibility = if (loading) View.GONE else View.VISIBLE
+        if (isAdded) {
+            binding.loadingBarChart.visibility = if (loading) View.VISIBLE else View.GONE
+            binding.barChart.visibility = if (loading) View.GONE else View.VISIBLE
+        }
     }
 
     private fun showCompliment() {

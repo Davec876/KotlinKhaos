@@ -70,8 +70,11 @@ class InstructorCreateQuizFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        binding.loadingQuizCreationProgress.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.generateQuizButton.isEnabled = !loading
+        if (isAdded) {
+            binding.loadingQuizCreationProgress.visibility =
+                if (loading) View.VISIBLE else View.GONE
+            binding.generateQuizButton.isEnabled = !loading
+        }
     }
 
     private fun navigateToQuizPreview() {

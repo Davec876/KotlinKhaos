@@ -106,8 +106,10 @@ class InstructorQuizDetailsFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        binding.loadingEndQuizProgress.visibility = if (loading) View.VISIBLE else View.GONE
-        binding.endQuizButton.isEnabled = !loading
+        if (isAdded) {
+            binding.loadingEndQuizProgress.visibility = if (loading) View.VISIBLE else View.GONE
+            binding.endQuizButton.isEnabled = !loading
+        }
     }
 
     override fun onDestroyView() {

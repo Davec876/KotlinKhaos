@@ -61,8 +61,10 @@ class StudentHomeFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val quizs = StudentQuizAttempt.getQuizsForCourse()
-                quizsForCourseListAdapter.updateData(quizs)
-                binding.quizsForCourseList.setHasFixedSize(true) // fixed list performance optimization
+                if (isAdded) {
+                    quizsForCourseListAdapter.updateData(quizs)
+                    binding.quizsForCourseList.setHasFixedSize(true) // fixed list performance optimization
+                }
             } catch (err: Exception) {
                 if (err is FirebaseAuthError || err is StudentQuizError) {
                     binding.errorMessage.text = err.message
@@ -76,10 +78,11 @@ class StudentHomeFragment : Fragment() {
     }
 
     private fun setLoadingState(loading: Boolean) {
-        binding.refreshQuizForCourseList.post {
-            binding.refreshQuizForCourseList.isRefreshing = loading
+        if (isAdded) {
+            binding.refreshQuizForCourseList.post {
+                binding.refreshQuizForCourseList.isRefreshing = loading
+            }
         }
     }
-
 
 }
