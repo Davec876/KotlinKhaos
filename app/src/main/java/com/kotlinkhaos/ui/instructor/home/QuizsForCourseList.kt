@@ -10,11 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kotlinkhaos.R
 import com.kotlinkhaos.classes.services.InstructorQuizsForCourseRes
 import com.kotlinkhaos.classes.user.User
+import com.kotlinkhaos.classes.user.viewmodel.UserAvatarViewModel
 import com.kotlinkhaos.classes.utils.loadImage
 
 class QuizsForCourseListAdapter(
     private var dataSet: List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes>,
-    private val clickListener: (String) -> Unit
+    private val clickListener: (String) -> Unit,
+    private val userAvatarViewModel: UserAvatarViewModel
 ) :
     RecyclerView.Adapter<QuizsForCourseListAdapter.ViewHolder>() {
 
@@ -50,12 +52,19 @@ class QuizsForCourseListAdapter(
         val quiz = dataSet[position]
         viewHolder.quizName.text = quiz.name
         if (quiz.authorAvatarHash !== null) {
-            viewHolder.avatarIcon.loadImage(
-                User.getProfilePicture(
-                    quiz.authorId,
-                    quiz.authorAvatarHash
+            val updatedAvatarUrl = userAvatarViewModel.getUpdatedAvatarUrl(quiz.authorId)
+            if (updatedAvatarUrl != null) {
+                viewHolder.avatarIcon.loadImage(
+                    updatedAvatarUrl
                 )
-            )
+            } else {
+                viewHolder.avatarIcon.loadImage(
+                    User.getProfilePicture(
+                        quiz.authorId,
+                        quiz.authorAvatarHash
+                    )
+                )
+            }
         }
         viewHolder.viewButton.setOnClickListener {
             clickListener(quiz.id)

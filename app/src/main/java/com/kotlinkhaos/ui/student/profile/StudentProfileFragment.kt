@@ -1,12 +1,12 @@
 package com.kotlinkhaos.ui.student.profile
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -17,18 +17,19 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.kotlinkhaos.R
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.StudentQuizError
-import com.kotlinkhaos.classes.errors.UserError
 import com.kotlinkhaos.classes.quiz.StudentQuizAttempt
 import com.kotlinkhaos.classes.services.StudentWeeklySummaryRes
-import com.kotlinkhaos.classes.user.User
-import com.kotlinkhaos.classes.utils.loadImage
+import com.kotlinkhaos.classes.user.viewmodel.UserAvatarViewModel
+import com.kotlinkhaos.classes.utils.loadProfilePicture
 import com.kotlinkhaos.classes.utils.openPictureGallery
 import com.kotlinkhaos.classes.utils.setupImagePickerCallbacks
+import com.kotlinkhaos.classes.utils.uploadProfilePicture
 import com.kotlinkhaos.databinding.FragmentStudentProfileBinding
 import kotlinx.coroutines.launch
 
 class StudentProfileFragment : Fragment() {
     private var _binding: FragmentStudentProfileBinding? = null
+    private val userAvatarViewModel: UserAvatarViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -47,13 +48,20 @@ class StudentProfileFragment : Fragment() {
         // Setup profile picture image picker
         val (imagePicker, requestPermissionLauncher) = setupImagePickerCallbacks { selectedImageUri ->
             if (selectedImageUri != null) {
-                uploadImage(selectedImageUri)
+                uploadProfilePicture(
+                    this,
+                    requireContext(),
+                    binding.profilePictureLayout,
+                    binding,
+                    userAvatarViewModel,
+                    selectedImageUri
+                )
             }
         }
         binding.profilePictureLayout.changeProfilePicture.setOnClickListener {
             openPictureGallery(imagePicker, requestPermissionLauncher)
         }
-        loadProfilePicture()
+        loadProfilePicture(this, binding.profilePictureLayout, binding, userAvatarViewModel)
 
         //Call function
         loadWeeklySummary()
@@ -175,38 +183,6 @@ class StudentProfileFragment : Fragment() {
         binding.textStudentProfile.text = resources.getString(R.string.compliment)
     }
 
-    private fun loadProfilePicture() {
-        lifecycleScope.launch {
-            try {
-                val imageUrl = User.getProfilePicture()
-                binding.profilePictureLayout.profilePicture.loadImage(
-                    imageUrl,
-                    binding.profilePictureLayout.profilePictureLoading
-                )
-            } catch (err: Exception) {
-                if (err is FirebaseAuthError || err is UserError) {
-                    binding.errorMessage.text = err.message
-                    return@launch
-                }
-                throw err
-            }
-        }
-    }
-
-    private fun uploadImage(selectedImageUri: Uri) {
-        lifecycleScope.launch {
-            try {
-                User.uploadProfilePicture(requireContext(), selectedImageUri)
-                loadProfilePicture()
-            } catch (err: Exception) {
-                if (err is FirebaseAuthError || err is UserError) {
-                    binding.errorMessage.text = err.message
-                    return@launch
-                }
-                throw err
-            }
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -125,4 +125,4 @@ class KotlinKhaosUserApi {
 data class UserProfilePictureHashRes(val sha256: String? = null)
 
 @Serializable
-data class UserProfilePictureUploadUrlRes(val uploadUrl: String)
+data class UserProfilePictureUploadUrlRes(val sha256: String, val uploadUrl: String)

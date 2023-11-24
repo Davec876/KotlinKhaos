@@ -11,12 +11,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kotlinkhaos.classes.errors.FirebaseAuthError
 import com.kotlinkhaos.classes.errors.InstructorQuizError
+import com.kotlinkhaos.classes.user.viewmodel.UserAvatarViewModel
 import com.kotlinkhaos.databinding.FragmentInstructorHomeBinding
 
 class InstructorHomeFragment : Fragment() {
     private var _binding: FragmentInstructorHomeBinding? = null
     private lateinit var quizsForCourseListAdapter: QuizsForCourseListAdapter
     private val quizsForCourseViewModel: QuizsForCourseViewModel by activityViewModels()
+    private val userAvatarViewModel: UserAvatarViewModel by activityViewModels()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -35,10 +37,10 @@ class InstructorHomeFragment : Fragment() {
         binding.refreshQuizForCourseList.setOnRefreshListener {
             loadQuizListForCourse()
         }
-        quizsForCourseListAdapter = QuizsForCourseListAdapter(emptyList()) { quizId ->
+        quizsForCourseListAdapter = QuizsForCourseListAdapter(emptyList(), { quizId ->
             val action = InstructorHomeFragmentDirections.startNavigationQuizDetails(quizId)
             findNavController().navigate(action)
-        }
+        }, userAvatarViewModel)
         binding.quizsForCourseList.adapter = quizsForCourseListAdapter
         binding.quizsForCourseList.layoutManager = LinearLayoutManager(requireContext())
         binding.quizsForCourseList.addItemDecoration(
