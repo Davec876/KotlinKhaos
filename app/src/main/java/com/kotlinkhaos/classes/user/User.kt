@@ -53,7 +53,7 @@ class User private constructor(
             }
         }
 
-        private fun validateRegisterParameters(
+        private suspend fun validateRegisterParameters(
             email: String,
             pass: String,
             userDetails: UserDetails
@@ -61,6 +61,17 @@ class User private constructor(
             validateLoginParameters(email, pass)
             if (userDetails.name.isEmpty()) {
                 throw FirebaseAuthError("Name must not be empty")
+            }
+            if (userDetails.type == UserType.INSTRUCTOR) {
+                // Validate if a instructor index already exists with this name
+                val databaseReference =
+                    FirebaseDatabase.getInstance()
+                        .getReference("instructorsNameCourseIndex/${userDetails.name}")
+                val dataSnapshot = databaseReference.get().await()
+                val result = dataSnapshot.getValue<InstructorNameCourseIndex>()
+                if (result != null) {
+                    throw FirebaseAuthError("Name has been taken by another instructor")
+                }
             }
         }
 
