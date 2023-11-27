@@ -25,6 +25,13 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.nio.channels.UnresolvedAddressException
 
+/**
+ * API client for managing instructor quizzes in Kotlin Khaos.
+ * Facilitates various operations like creating, starting, editing, and finishing quizzes.
+ * Refer to https://kotlin-khaos-api.maximoguk.com/docs/
+ *
+ * @param token The authentication token required for API requests.
+ */
 class KotlinKhaosQuizInstructorApi(private val token: String) {
     private val apiHost = "https://kotlin-khaos-api.maximoguk.com"
     private val client: HttpClient = HttpClient(CIO) {
@@ -35,6 +42,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
+    /**
+     * Creates a new quiz with specified options.
+     */
     suspend fun createQuiz(quizCreateOptions: InstructorQuizCreateReq.Options): InstructorQuizCreateRes {
         try {
             val res = client.post("$apiHost/instructor/quizs") {
@@ -53,6 +63,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
+    /**
+     * Retrieves the next question for a specified quiz.
+     */
     suspend fun nextQuestion(quizId: String): InstructorQuizNextQuestionRes {
         try {
             val res =
@@ -71,6 +84,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
+    /**
+     * Edits the questions of a specified quiz.
+     */
     suspend fun editQuestions(
         quizId: String,
         questions: List<String>
@@ -93,6 +109,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
+    /**
+     * Starts a specified quiz.
+     */
     suspend fun startQuiz(quizId: String): InstructorQuizStartRes {
         try {
             val res = client.post("$apiHost/instructor/quizs/$quizId/start") {
@@ -110,6 +129,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
+    /**
+     * Finishes a specified quiz.
+     */
     suspend fun finishQuiz(quizId: String): InstructorQuizFinishRes {
         try {
             val res = client.post("$apiHost/instructor/quizs/$quizId/finish") {
@@ -127,6 +149,9 @@ class KotlinKhaosQuizInstructorApi(private val token: String) {
         }
     }
 
+    /**
+     * Retrieves all quizzes for an instructor's course.
+     */
     suspend fun getCourseQuizsForInstructor(): InstructorQuizsForCourseRes {
         try {
             val res = client.get("$apiHost/instructor/course/quizs") {

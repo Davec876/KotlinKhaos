@@ -31,6 +31,11 @@ import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.nio.channels.UnresolvedAddressException
 
+/**
+ * API client for managing user-related operations in Kotlin Khaos.
+ * Handles operations such as retrieving and uploading profile pictures.
+ * Refer to https://kotlin-khaos-api.maximoguk.com/docs/
+ */
 class KotlinKhaosUserApi {
     private val apiHost = "https://kotlin-khaos-api.maximoguk.com"
     private val client: HttpClient = HttpClient(CIO) {
@@ -41,6 +46,9 @@ class KotlinKhaosUserApi {
         }
     }
 
+    /**
+     * Retrieves the hash of the current user's profile picture.
+     */
     suspend fun getProfilePictureHash(
         token: String,
     ): UserProfilePictureHashRes {
@@ -60,6 +68,9 @@ class KotlinKhaosUserApi {
         }
     }
 
+    /**
+     * Retrieves a presigned URL for uploading a profile picture to S3.
+     */
     suspend fun getPresignedProfilePictureUploadUrl(
         token: String,
         sha256Hash: String
@@ -81,6 +92,9 @@ class KotlinKhaosUserApi {
         }
     }
 
+    /**
+     * Uploads an image to S3 using a presigned URL.
+     */
     suspend fun uploadImageToS3(inputStream: InputStream, preSignedUrl: String) {
         try {
             val contentLength = withContext(Dispatchers.IO) {

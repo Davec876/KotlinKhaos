@@ -24,6 +24,13 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.nio.channels.UnresolvedAddressException
 
+/**
+ * API client for managing student quizzes in Kotlin Khaos.
+ * Facilitates various operations like
+ * Refer to https://kotlin-khaos-api.maximoguk.com/docs/
+ *
+ * @param token The authentication token required for API requests.
+ */
 class KotlinKhaosQuizStudentApi(private val token: String) {
     private val apiHost = "https://kotlin-khaos-api.maximoguk.com"
     private val client: HttpClient = HttpClient(CIO) {
@@ -34,6 +41,9 @@ class KotlinKhaosQuizStudentApi(private val token: String) {
         }
     }
 
+    /**
+     * Creates an attempt for a student to take a quiz.
+     */
     suspend fun createStudentQuizAttempt(quizId: String): StudentQuizAttemptCreateRes {
         try {
             val res = client.post("$apiHost/student/quizs/$quizId/attempt") {
@@ -51,6 +61,9 @@ class KotlinKhaosQuizStudentApi(private val token: String) {
         }
     }
 
+    /**
+     * Retrieves details of a student's quiz attempt by its ID.
+     */
     suspend fun getStudentQuizAttempt(
         quizAttemptId: String,
     ): StudentQuizAttemptRes {
@@ -70,6 +83,9 @@ class KotlinKhaosQuizStudentApi(private val token: String) {
         }
     }
 
+    /**
+     * Submits answers for a student's quiz attempt.
+     */
     suspend fun submitStudentQuizAttempt(
         quizAttemptId: String,
         answers: List<String>
@@ -91,6 +107,9 @@ class KotlinKhaosQuizStudentApi(private val token: String) {
         }
     }
 
+    /**
+     * Retrieves all quizzes available for a student's course.
+     */
     suspend fun getCourseQuizsForStudent(): StudentQuizsForCourseRes {
         try {
             val res = client.get("$apiHost/student/course/quizs") {
@@ -108,6 +127,9 @@ class KotlinKhaosQuizStudentApi(private val token: String) {
         }
     }
 
+    /**
+     * Retrieves a weekly summary of quiz attempts and scores for a student.
+     */
     suspend fun getWeeklySummaryForStudent(): StudentWeeklySummaryRes {
         try {
             val res = client.get("$apiHost/student/course/quizs/weekly-summary") {

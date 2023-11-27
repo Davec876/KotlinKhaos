@@ -24,6 +24,13 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.nio.channels.UnresolvedAddressException
 
+/**
+ * API client for Kotlin Khaos Practice Quiz.
+ * Handles network operations for starting, getting, answering, and continuing practice quizzes.
+ * Refer to https://kotlin-khaos-api.maximoguk.com/docs/
+ *
+ * @param token The authentication token required for API requests.
+ */
 class KotlinKhaosPracticeQuizApi(private val token: String) {
     private val apiHost = "https://kotlin-khaos-api.maximoguk.com"
     private val client: HttpClient = HttpClient(CIO) {
@@ -34,6 +41,9 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
         }
     }
 
+    /**
+     * Starts a new practice quiz with a given prompt.
+     */
     suspend fun startPracticeQuiz(prompt: String): PracticeQuizStartRes {
         try {
             val res = client.post("$apiHost/practice-quizs") {
@@ -52,6 +62,9 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
         }
     }
 
+    /**
+     * Retrieves a practice quiz by its ID.
+     */
     suspend fun getPracticeQuizById(
         practiceQuizId: String
     ): PracticeQuizGetByIdRes {
@@ -71,6 +84,9 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
         }
     }
 
+    /**
+     * Sends an answer for a specific practice quiz and gets feedback.
+     */
     suspend fun sendPracticeQuizAnswer(
         practiceQuizId: String,
         answer: String
@@ -93,6 +109,10 @@ class KotlinKhaosPracticeQuizApi(private val token: String) {
         }
     }
 
+    /**
+     * Continue a practice quiz, which results in getting a new problem or finishing the quiz if
+     * there are no more questions available.
+     */
     suspend fun continuePracticeQuiz(
         practiceQuizId: String
     ): PracticeQuizContinueRes {
