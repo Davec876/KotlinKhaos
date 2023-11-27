@@ -13,6 +13,9 @@ import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
 import kotlinx.coroutines.tasks.await
 import java.util.UUID
 
+/**
+ * Represents a course from the perspective of an instructor, allowing for course creation and management.
+ */
 enum class EducationLevelType {
     UNIVERSITY,
     ELEMENTARY,
@@ -20,6 +23,9 @@ enum class EducationLevelType {
     NONE
 }
 
+/**
+ * Data class representing the details of a course.
+ */
 // No-argument constructor, initialized empty strings
 data class CourseDetails(
     val id: String = "",
@@ -31,6 +37,10 @@ data class CourseDetails(
     val quizIds: MutableList<String> = emptyList<String>().toMutableList(),
 )
 
+/**
+ * Represents a course managed by an instructor. This class provides functionalities for creating new courses,
+ * retrieving course details, and other course management tasks.
+ */
 class CourseInstructor private constructor(
     private val id: String,
     private val instructorId: String,
@@ -42,12 +52,24 @@ class CourseInstructor private constructor(
 ) {
     companion object {
 
+        /**
+         * Validates the provided course details.
+         *
+         * @param courseDetails The details of the course to be validated.
+         * @throws FirebaseAuthError If validation fails.
+         */
         private fun validateCourseParameters(courseDetails: CourseDetails) {
             if (courseDetails.name.isEmpty() || courseDetails.description.isEmpty() || courseDetails.educationLevel == EducationLevelType.NONE) {
                 throw FirebaseAuthError("Course name, description and education level must not be empty")
             }
         }
 
+        /**
+         * Creates course details in the database.
+         *
+         * @param courseDetails The details of the course to be created.
+         * @throws FirebaseAuthError If the creation process fails.
+         */
         suspend fun createCourseDetails(courseDetails: CourseDetails) {
             try {
                 val databaseReference =
@@ -58,6 +80,13 @@ class CourseInstructor private constructor(
             }
         }
 
+        /**
+         * Retrieves the details of a course using its ID.
+         *
+         * @param courseId The ID of the course to retrieve.
+         * @return The details of the requested course.
+         * @throws CourseDbError If the course details are not found.
+         */
         suspend fun getCourseDetails(courseId: String): CourseDetails {
             val databaseReference =
                 FirebaseDatabase.getInstance().getReference("courses/${courseId}")
@@ -66,6 +95,9 @@ class CourseInstructor private constructor(
                 ?: throw CourseDbError("Course details not found")
         }
 
+        /**
+         * Creates a new course with the provided details.
+         */
         suspend fun create(
             userViewModel: UserViewModel,
             instructor: User,

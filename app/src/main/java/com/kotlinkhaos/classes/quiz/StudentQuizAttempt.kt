@@ -8,6 +8,9 @@ import com.kotlinkhaos.classes.services.StudentQuizsForCourseRes
 import com.kotlinkhaos.classes.services.StudentWeeklySummaryRes
 import com.kotlinkhaos.classes.user.User
 
+/**
+ * Represents an attempt by a student to take a quiz.
+ */
 class StudentQuizAttempt private constructor(
     private val id: String,
     private val quizName: String,
@@ -16,6 +19,14 @@ class StudentQuizAttempt private constructor(
     private var finalScore: Int?,
 ) {
     companion object {
+        /**
+         * Creates a new quiz attempt for a given quiz.
+         *
+         * @param quizId The unique identifier of the quiz.
+         * @return An instance of StudentQuizAttempt.
+         * @throws StudentQuizNetworkError On network issues.
+         * @throws Exception On other errors.
+         */
         suspend fun createQuizAttempt(quizId: String): StudentQuizAttempt {
             try {
                 val token = User.getJwt()
@@ -37,6 +48,14 @@ class StudentQuizAttempt private constructor(
             }
         }
 
+        /**
+         * Retrieves details of a specific quiz attempt by its ID.
+         *
+         * @param quizAttemptId The unique identifier of the quiz attempt.
+         * @return Details of the quiz attempt.
+         * @throws StudentQuizNetworkError On network issues.
+         * @throws Exception On other errors.
+         */
         suspend fun getStudentQuizAttempt(quizAttemptId: String): StudentQuizAttemptRes.QuizAttempt {
             try {
                 val token = User.getJwt()
@@ -50,6 +69,13 @@ class StudentQuizAttempt private constructor(
             }
         }
 
+        /**
+         * Retrieves all quizzes available for a student's course.
+         *
+         * @return A list of quizzes available for the student's course.
+         * @throws StudentQuizNetworkError On network issues.
+         * @throws Exception On other errors.
+         */
         suspend fun getQuizsForCourse(): List<StudentQuizsForCourseRes.StudentQuizDetailsRes> {
             try {
                 val kotlinKhaosApi = KotlinKhaosQuizStudentApi(User.getJwt())
@@ -62,6 +88,13 @@ class StudentQuizAttempt private constructor(
             }
         }
 
+        /**
+         * Retrieves a weekly summary of quiz attempts and scores for a student.
+         *
+         * @return A weekly summary of the student's quiz activities.
+         * @throws StudentQuizNetworkError On network issues.
+         * @throws Exception On other errors.
+         */
         suspend fun getWeeklySummaryForStudent(): StudentWeeklySummaryRes.WeeklySummary {
             try {
                 val kotlinKhaosApi = KotlinKhaosQuizStudentApi(User.getJwt())
@@ -75,6 +108,12 @@ class StudentQuizAttempt private constructor(
         }
     }
 
+    /**
+     * Submits the current quiz attempt with the student's answers to the backend and updates the final score.
+     *
+     * @throws StudentQuizNetworkError On network issues.
+     * @throws Exception On other errors.
+     */
     suspend fun submitAttempt() {
         try {
             val token = User.getJwt()

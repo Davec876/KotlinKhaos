@@ -8,6 +8,9 @@ import com.kotlinkhaos.classes.services.InstructorQuizsForCourseRes
 import com.kotlinkhaos.classes.services.KotlinKhaosQuizInstructorApi
 import com.kotlinkhaos.classes.user.User
 
+/**
+ * Represents a quiz from the perspective of an instructor, allowing for quiz creation, modification, and retrieval.
+ */
 class InstructorQuiz private constructor(
     private val id: String,
     private var name: String,
@@ -15,12 +18,26 @@ class InstructorQuiz private constructor(
     private var questions: MutableList<String>
 ) {
     companion object {
+        /**
+         * Validates quiz creation options.
+         *
+         * @param quizCreateOptions The options for creating a quiz.
+         * @throws InstructorQuizCreationError If name or prompt is empty.
+         */
         private fun validateQuizCreateOptions(quizCreateOptions: InstructorQuizCreateReq.Options) {
             if (quizCreateOptions.name.isEmpty() || quizCreateOptions.prompt.isEmpty()) {
                 throw InstructorQuizCreationError("Name and prompt must not be empty")
             }
         }
 
+        /**
+         * Creates a new quiz with specified options.
+         *
+         * @param quizCreateOptions The options for creating the quiz.
+         * @return An instance of InstructorQuiz.
+         * @throws InstructorQuizNetworkError On network issues.
+         * @throws Exception On other errors.
+         */
         suspend fun createQuiz(
             quizCreateOptions: InstructorQuizCreateReq.Options
         ): InstructorQuiz {
@@ -44,6 +61,13 @@ class InstructorQuiz private constructor(
             }
         }
 
+        /**
+         * Retrieves all quizzes for a course.
+         *
+         * @return A list of InstructorQuizDetailsRes containing quiz details.
+         * @throws InstructorQuizNetworkError On network issues.
+         * @throws Exception On other errors.
+         */
         suspend fun getQuizsForCourse(): List<InstructorQuizsForCourseRes.InstructorQuizDetailsRes> {
             try {
                 val kotlinKhaosApi = KotlinKhaosQuizInstructorApi(User.getJwt())
@@ -56,6 +80,13 @@ class InstructorQuiz private constructor(
             }
         }
 
+        /**
+         * Finishes a quiz with the given quiz ID.
+         *
+         * @param quizId The unique identifier of the quiz to be finished.
+         * @throws InstructorQuizNetworkError On network issues.
+         * @throws Exception On other errors.
+         */
         suspend fun finish(quizId: String) {
             try {
                 val token = User.getJwt()

@@ -6,9 +6,16 @@ import com.kotlinkhaos.classes.user.UserDetails
 import com.kotlinkhaos.classes.user.viewmodel.UserViewModel
 
 
+/**
+ * Represents student-related functionalities within a course context.
+ * This class handles operations such as a student joining a course.
+ */
 class CourseStudent private constructor() {
     companion object {
 
+        /**
+         * Allows a student to join a course. It updates the course details and the student's user details accordingly.
+         */
         suspend fun joinCourse(
             userViewModel: UserViewModel,
             courseDetails: CourseDetails,
@@ -24,7 +31,6 @@ class CourseStudent private constructor() {
             // Updates userDetails in userViewModel cache
             userViewModel.saveDetails(userDetails.courseId, userDetails.type)
         }
-        
     }
 
 }

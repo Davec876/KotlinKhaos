@@ -5,6 +5,9 @@ import com.kotlinkhaos.classes.errors.PracticeQuizNetworkError
 import com.kotlinkhaos.classes.services.KotlinKhaosPracticeQuizApi
 import com.kotlinkhaos.classes.user.User
 
+/**
+ * Represents a practice quiz, handling functionalities such as starting the quiz, sending answers, and continuing to the next question.
+ */
 class PracticeQuiz private constructor(
     private val id: String,
     private var question: String,
@@ -13,6 +16,14 @@ class PracticeQuiz private constructor(
     private var finalScore: Int?,
 ) {
     companion object {
+        /**
+         * Starts a new practice quiz based on the provided prompt.
+         *
+         * @param prompt The prompt to start the quiz with.
+         * @return An instance of PracticeQuiz.
+         * @throws PracticeQuizNetworkError On network issues.
+         * @throws Exception On other errors.
+         */
         suspend fun start(prompt: String): PracticeQuiz {
             try {
                 val token = User.getJwt()
