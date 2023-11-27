@@ -3,6 +3,11 @@ package com.kotlinkhaos.classes.utils
 import java.io.InputStream
 import java.security.MessageDigest
 
+/**
+ * Calculates the SHA-256 hash of content read from a given InputStream
+ * @param inputStream The InputStream to read the content from.
+ * @return The hexadecimal string representing the SHA-256 hash of the content.
+ */
 fun calculateSha256Hash(inputStream: InputStream): String {
     return inputStream.use { stream ->
         val buffer = ByteArray(1024)
@@ -15,6 +20,13 @@ fun calculateSha256Hash(inputStream: InputStream): String {
     }
 }
 
+/**
+ * Converts a byte array to a hexadecimal string.
+ * This is a helper function used by calculateSha256Hash to convert the hash byte array to a hex string.
+ *
+ * @param hash The byte array to be converted into a hexadecimal string.
+ * @return The hexadecimal string representation of the byte array.
+ */
 private fun bytesToHex(hash: ByteArray): String {
     val hexString = StringBuilder(2 * hash.size)
     for (byte in hash) {

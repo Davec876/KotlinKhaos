@@ -15,6 +15,10 @@ import com.kotlinkhaos.databinding.FragmentStudentProfileBinding
 import com.kotlinkhaos.databinding.ProfilePictureLayoutBinding
 import kotlinx.coroutines.launch
 
+/**
+ * Uploads a selected profile picture to a remote server and updates the user's avatar in the userAvatarViewModel.
+ * It handles loading visibility and error messages during the upload process.
+ */
 fun uploadProfilePicture(
     lifecycleOwner: LifecycleOwner,
     context: Context,
@@ -54,6 +58,10 @@ fun uploadProfilePicture(
     }
 }
 
+/**
+ * Loads the user's profile picture into the view. It observes the avatar URL from the userAvatarViewModel.
+ * Handles updating the ImageView with the profile picture and displays errors if they occur during the loading process.
+ */
 fun loadProfilePicture(
     lifecycleOwner: LifecycleOwner,
     profilePictureLayoutBinding: ProfilePictureLayoutBinding,

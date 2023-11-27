@@ -2,6 +2,11 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * An ItemDecoration for RecyclerView that adds space above and below each item.
+ *
+ * @param spaceHeight The height of the space to be added above and below each item, in pixels.
+ */
 class SpaceItemDecorationHeight(private val spaceHeight: Int) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect,
@@ -14,6 +19,12 @@ class SpaceItemDecorationHeight(private val spaceHeight: Int) : RecyclerView.Ite
     }
 }
 
+/**
+ * An ItemDecoration for RecyclerView that adds space below each item, unless it's the last item.
+ * in which case no space is added.
+ *
+ * @param spaceHeight The height of the space to be added below each item, in pixels.
+ */
 class SpaceItemDecorationBottom(private val spaceHeight: Int) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect,

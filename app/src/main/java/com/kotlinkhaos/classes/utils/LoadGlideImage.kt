@@ -13,6 +13,12 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.kotlinkhaos.R
 
+/**
+ * Extension function for ImageView to load an image from a URL using Glide.
+ * The function applies default caching strategy and placeholders for loading and error states.
+ *
+ * @param url The URL of the image to be loaded into the ImageView.
+ */
 fun ImageView.loadImage(url: String) {
     Glide.with(this.context)
         .load(url)
@@ -25,6 +31,14 @@ fun ImageView.loadImage(url: String) {
         .into(this)
 }
 
+/**
+ * Extension function for ImageView to load an image from a URL using Glide with a ProgressBar.
+ * Shows the ProgressBar while the image is loading and hides it once loading is complete or failed.
+ * The function applies default caching strategy and placeholders for loading and error states.
+ *
+ * @param url The URL of the image to be loaded into the ImageView.
+ * @param progressBar The ProgressBar to be shown while the image is loading.
+ */
 fun ImageView.loadImage(url: String, progressBar: ProgressBar) {
     progressBar.visibility = View.VISIBLE
 
