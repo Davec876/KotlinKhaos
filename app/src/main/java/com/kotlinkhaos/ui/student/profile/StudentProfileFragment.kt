@@ -72,11 +72,12 @@ class StudentProfileFragment : Fragment() {
     //Method to format float values for BarChart data as integers
     class IntegerPercentFormatter : ValueFormatter() {
         override fun getFormattedValue(value: Float): String {
-            return "${(value * 10).toInt()}%" //Formats the values as integer percentages
+            //Formats the values as integer percentages
+            return "${(value * 10).toInt()}%"
         }
     }
 
-    //Method to calculate the user's average progress over a week
+    //Method to calculate the user's average progress over a week - uses average daily score and looks for consistent improvement
     private fun calculateProgress(weeklySummaryRes: StudentWeeklySummaryRes.WeeklySummary): Boolean {
 
         val scores = listOf(
@@ -133,7 +134,7 @@ class StudentProfileFragment : Fragment() {
                     )
                 }
 
-                //Configuration of the BarChart
+                //Configuration of the BarChart(appearance, axis values & labels, and data/data entry handling)
                 val barDataSet = BarDataSet(entries, "Daily Average Quiz Score")
                 val barData = BarData(barDataSet)
                 barDataSet.color = ContextCompat.getColor(requireContext(), R.color.purple_500)
@@ -180,7 +181,7 @@ class StudentProfileFragment : Fragment() {
             binding.barChartCardView.visibility = if (loading) View.GONE else View.VISIBLE
         }
     }
-
+    //This method handles the binding of the textStudentProfile string to display the compliment
     private fun showCompliment() {
         binding.textStudentProfile.text = resources.getString(R.string.compliment)
     }
