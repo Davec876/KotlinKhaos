@@ -8,6 +8,10 @@ import com.kotlinkhaos.classes.user.User
 import com.kotlinkhaos.classes.user.UserType
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel for managing and storing user details.
+ * @param userTypeDataStore An instance of UserStore for data persistence.
+ */
 class UserViewModel(private val userTypeDataStore: UserStore) : ViewModel() {
     private var _storedUserDetails = MutableLiveData<StoredUserDetails?>()
     val storedUserDetails: LiveData<StoredUserDetails?> = _storedUserDetails
@@ -15,6 +19,10 @@ class UserViewModel(private val userTypeDataStore: UserStore) : ViewModel() {
     private var _userDetails = MutableLiveData<StoredUserDetails?>()
     val userDetails: LiveData<StoredUserDetails?> = _userDetails
 
+    /**
+     * Loads user details from the User class and updates LiveData.
+     * If the user is null, clears stored details.
+     */
     fun loadDetails() {
         viewModelScope.launch {
             val user = User.getUser()
@@ -30,6 +38,9 @@ class UserViewModel(private val userTypeDataStore: UserStore) : ViewModel() {
         }
     }
 
+    /**
+     * Loads user details from the UserStore and updates LiveData.
+     */
     fun loadDetailsFromStore() {
         viewModelScope.launch {
             val storedUserDetails = userTypeDataStore.loadUserDetails()
@@ -37,6 +48,11 @@ class UserViewModel(private val userTypeDataStore: UserStore) : ViewModel() {
         }
     }
 
+    /**
+     * Saves the specified course ID and user type to the UserStore and updates LiveData.
+     * @param courseId The course ID of the user.
+     * @param userType The type of the user (e.g., STUDENT, INSTRUCTOR).
+     */
     fun saveDetails(courseId: String, userType: UserType) {
         viewModelScope.launch {
             val userDetails = StoredUserDetails(courseId, userType)
@@ -46,6 +62,9 @@ class UserViewModel(private val userTypeDataStore: UserStore) : ViewModel() {
         }
     }
 
+    /**
+     * Clears user details from the UserStore and sets LiveData to null.
+     */
     fun clear() {
         viewModelScope.launch {
             userTypeDataStore.clearUserDetails()

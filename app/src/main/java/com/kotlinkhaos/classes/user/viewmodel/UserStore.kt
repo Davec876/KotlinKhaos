@@ -11,8 +11,17 @@ import kotlinx.coroutines.flow.first
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_details_preferences")
 
+/**
+ * Data class representing stored user details.
+ * @param userCourseId The ID of the user's course.
+ * @param userType The type of the user (STUDENT, INSTRUCTOR, NONE).
+ */
 data class StoredUserDetails(val userCourseId: String, val userType: UserType)
 
+/**
+ * Utility class for handling the storage and retrieval of user details using DataStore.
+ * @param context The context of the application.
+ */
 class UserStore(context: Context) {
     private val dataStore = context.dataStore
 
@@ -21,6 +30,10 @@ class UserStore(context: Context) {
         val USER_TYPE_KEY = stringPreferencesKey("user_type")
     }
 
+    /**
+     * Saves the user's details (course ID and user type) into the DataStore.
+     * @param userDetails The user details to be saved.
+     */
     suspend fun saveUserDetails(userDetails: StoredUserDetails) {
         dataStore.edit { preferences ->
             preferences[USER_COURSE_ID_KEY] = userDetails.userCourseId
@@ -28,6 +41,10 @@ class UserStore(context: Context) {
         }
     }
 
+    /**
+     * Loads the user's details (course ID and user type) from the DataStore.
+     * @return StoredUserDetails containing the user's course ID and type, or null if not found.
+     */
     suspend fun loadUserDetails(): StoredUserDetails? {
         val preferences = dataStore.data.first()
         val userTypeString = preferences[USER_TYPE_KEY] ?: return null
@@ -42,6 +59,9 @@ class UserStore(context: Context) {
         return StoredUserDetails(userCourseId, userType)
     }
 
+    /**
+     * Clears the user's details from the DataStore.
+     */
     suspend fun clearUserDetails() {
         dataStore.edit { preferences ->
             preferences.remove(USER_TYPE_KEY)
