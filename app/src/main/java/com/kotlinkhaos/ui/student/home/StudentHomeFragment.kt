@@ -35,10 +35,12 @@ class StudentHomeFragment : Fragment() {
         binding.refreshQuizForCourseList.setOnRefreshListener {
             loadQuizListForCourse()
         }
+        // Initialize the adapter and set it to the RecyclerView.
         quizsForCourseListAdapter = QuizsForCourseListAdapter(emptyList()) { quizId ->
             val action = StudentHomeFragmentDirections.startNavigationStudentQuizAttempt(quizId)
             findNavController().navigate(action)
         }
+        // Add item decoration to the RecyclerView.
         binding.quizsForCourseList.adapter = quizsForCourseListAdapter
         binding.quizsForCourseList.layoutManager = LinearLayoutManager(requireContext())
         binding.quizsForCourseList.addItemDecoration(
@@ -46,16 +48,16 @@ class StudentHomeFragment : Fragment() {
                 4
             )
         )
-
+        // Load the list of quizzes.
         loadQuizListForCourse()
         return root
     }
-
+    // Method called when the view is about to be destroyed.
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
+    // Method to load the list of quizzes for a course.
     private fun loadQuizListForCourse() {
         setLoadingState(true)
         lifecycleScope.launch {
@@ -66,6 +68,7 @@ class StudentHomeFragment : Fragment() {
                     binding.quizsForCourseList.setHasFixedSize(true) // fixed list performance optimization
                 }
             } catch (err: Exception) {
+                 // Handle specific errors and show messages.
                 if (err is FirebaseAuthError || err is StudentQuizError) {
                     binding.errorMessage.text = err.message
                     return@launch
@@ -76,7 +79,7 @@ class StudentHomeFragment : Fragment() {
             }
         }
     }
-
+    // Method to show or hide the loading indicator.
     private fun setLoadingState(loading: Boolean) {
         if (isAdded) {
             binding.refreshQuizForCourseList.post {
