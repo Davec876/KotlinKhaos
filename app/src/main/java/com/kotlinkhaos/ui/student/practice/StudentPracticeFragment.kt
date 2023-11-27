@@ -20,6 +20,7 @@ class StudentPracticeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        //Binding the fragment to the view and setting the click listener for the button
         _binding = FragmentStudentPracticeBinding.inflate(inflater, container, false)
         val root: View = binding.root
         binding.studentPracticeButton.setOnClickListener {
@@ -33,6 +34,9 @@ class StudentPracticeFragment : Fragment() {
         _binding = null
     }
 
+    /**
+     * This function handles the navigation to the practice attempts fragment
+     */
     private fun studentPracticeAttemptsNav() {
         val prompt = binding.inputQuizPrompt.text.toString().trim()
         val action =

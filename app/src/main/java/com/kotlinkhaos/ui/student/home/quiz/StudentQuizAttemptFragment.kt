@@ -46,6 +46,15 @@ class StudentQuizAttemptFragment : Fragment() {
         return root
     }
 
+    /**
+     * This function handles the next question
+     * so when the user clicks the button it will get the next question
+     * after the user has entered their answer and it's sent to the api
+     * and the feedback is returned and the next question is displayed
+     * if the user has finished the quiz then the final score is displayed
+     * along with feedback for the final score.
+     * @param userAnswer the answer the user entered in the edit text
+     */
     private fun handleNextQuestion() {
         setLoadingState(true)
         lifecycleScope.launch {
@@ -87,6 +96,13 @@ class StudentQuizAttemptFragment : Fragment() {
         }
     }
 
+    /**
+     * This function starts the quiz attempt
+     * so when the user clicks the button it will get the first question
+     * after the user has entered their answer and it's sent to the api
+     * and the feedback is returned and the next question is displayed
+     * @param quizId the quiz id
+     */
     private fun startQuizAttempt(quizId: String) {
         setLoadingState(true)
         lifecycleScope.launch {
@@ -112,6 +128,10 @@ class StudentQuizAttemptFragment : Fragment() {
         }
     }
 
+    /**
+     * This function sets up the action bar title
+     * so when the user clicks the button it will get the quiz name
+     */
     private fun setupActionBarQuizTitle() {
         (requireActivity() as AppCompatActivity).supportActionBar?.title =
             context?.getString(
@@ -120,6 +140,11 @@ class StudentQuizAttemptFragment : Fragment() {
             )
     }
 
+    /**
+     * This function handles the go back home
+     * so when the user clicks the button it will go back to the student home
+     *
+     */
     private fun handleGoBackHome() {
         val action = StudentQuizAttemptFragmentDirections.startNavigationGoBackToStudentHome()
         findNavController().navigate(action)

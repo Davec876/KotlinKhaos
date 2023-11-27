@@ -45,6 +45,13 @@ class PracticeAttemptFragment : Fragment() {
         return root
     }
 
+    /**
+     * This function handles the get feedback
+     * so when the user clicks the button it will get the feedback
+     * after the user has entered their answer and it's sent to the api
+     * and the feedback is returned
+     * @param userAnswer the answer the user entered in the edit text
+     */
     private fun handleGetFeedback() {
         setLoadingState(true)
         lifecycleScope.launch {
@@ -72,6 +79,12 @@ class PracticeAttemptFragment : Fragment() {
         }
     }
 
+    /**
+     * This function handles the next question in the practice quiz
+     * so when the user clicks the button it will send the request to the api
+     * and we have to wait for the api to return the next question
+     * @param nextQuestion the next question in the practice quiz
+     */
     private fun handleNextQuestion() {
         setLoadingState(true)
         lifecycleScope.launch {
@@ -111,6 +124,10 @@ class PracticeAttemptFragment : Fragment() {
         }
     }
 
+    /**
+     * Function to start the practice quiz
+     * @param prompt the prompt for the quiz
+     */
     private fun startPracticeQuiz(prompt: String) {
         setLoadingState(true)
         lifecycleScope.launch {
@@ -130,6 +147,10 @@ class PracticeAttemptFragment : Fragment() {
         }
     }
 
+    /**
+     * Function to set the loading state of the fragment
+     * @param loading the loading state of the fragment
+     */
     private fun setLoadingState(loading: Boolean) {
         if (isAdded) {
             if (loading) {
