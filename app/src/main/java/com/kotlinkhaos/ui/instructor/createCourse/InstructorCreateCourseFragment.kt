@@ -21,6 +21,10 @@ import com.kotlinkhaos.databinding.FragmentInstructorCreateCourseBinding
 import kotlinx.coroutines.launch
 
 
+/**
+ * Fragment used by instructors to create new courses.
+ * It handles user interactions for course creation and integrates with the CourseInstructor class for actual course creation logic.
+ */
 class InstructorCreateCourseFragment : Fragment() {
     private var _binding: FragmentInstructorCreateCourseBinding? = null
     private val userViewModel: UserViewModel by viewModels {
@@ -31,6 +35,9 @@ class InstructorCreateCourseFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    /**
+     * Inflates the layout for the fragment and sets up initial UI components and listeners.
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,12 +75,17 @@ class InstructorCreateCourseFragment : Fragment() {
         return root
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 
+    /**
+     * Handles the logic for creating a course when the 'Create Course' button is clicked.
+     * Validates input and communicates with the CourseInstructor class to create the course.
+     *
+     * @param educationLevelSelected The education level selected for the course.
+     */
     private fun handleCreateCourse(educationLevelSelected: EducationLevelType) {
         setLoadingState(true)
         lifecycleScope.launch {
@@ -106,6 +118,11 @@ class InstructorCreateCourseFragment : Fragment() {
 
     }
 
+    /**
+     * Sets the loading state of the UI when waiting for asynchronous operations.
+     *
+     * @param loading Boolean indicating whether the UI should be in a loading state.
+     */
     private fun setLoadingState(loading: Boolean) {
         if (isAdded) {
             binding.courseCreationProgess.visibility = if (loading) View.VISIBLE else View.GONE

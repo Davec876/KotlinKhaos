@@ -18,6 +18,10 @@ import com.kotlinkhaos.classes.user.viewmodel.UserViewModelFactory
 import com.kotlinkhaos.databinding.FragmentStudentJoinCourseBinding
 import kotlinx.coroutines.launch
 
+/**
+ * Fragment used by students to join courses.
+ * It provides an interface for students to enter course information and handles the logic for joining a course.
+ */
 class StudentJoinCourseFragment : Fragment() {
     private var _binding: FragmentStudentJoinCourseBinding? = null
     private val userViewModel: UserViewModel by viewModels {
@@ -28,6 +32,9 @@ class StudentJoinCourseFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    /**
+     * Inflates the layout for the fragment and sets up initial UI components and listeners.
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,6 +52,10 @@ class StudentJoinCourseFragment : Fragment() {
         return root
     }
 
+    /**
+     * Handles the logic for joining a course when the 'Join Course' button is clicked.
+     * Validates input and communicates with the CourseStudent class to join the course.
+     */
     private fun handleJoinClick() {
         setLoadingState(true)
         lifecycleScope.launch {
@@ -73,6 +84,11 @@ class StudentJoinCourseFragment : Fragment() {
 
     }
 
+    /**
+     * Sets the loading state of the UI when waiting for asynchronous operations.
+     *
+     * @param loading Boolean indicating whether the UI should be in a loading state.
+     */
     private fun setLoadingState(loading: Boolean) {
         if (isAdded) {
             binding.joinCourseProgess.visibility = if (loading) View.VISIBLE else View.GONE
